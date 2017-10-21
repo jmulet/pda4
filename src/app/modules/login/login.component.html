@@ -1,0 +1,14 @@
+<div>
+<h1>Login</h1>
+<button (click)="switchLang('ca')">ca</button>
+<button (click)="switchLang('es')">es</button>
+<button (click)="switchLang('en')">en</button><br>
+
+{{'USERNAME' | translate}}: <input type="text" name="username" [(ngModel)]="username"/><br/>
+{{'PASSWORD' | translate}}: <input type="password" name="password" [(ngModel)]="password" (keydown)="doLogin($event)"/>
+
+<h3>
+    <button (click)="doLogin()"  class="btn btn-sm btn-success">{{'LOGIN' | translate}}</button>
+</h3>
+{{error}}
+</div>

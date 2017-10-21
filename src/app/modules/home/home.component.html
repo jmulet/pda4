@@ -1,0 +1,12 @@
+<div>
+    <h1>{{'WELCOME' | translate }}</h1>
+    <h2>
+        {{user.fullname}}
+    </h2>
+
+    <button (click)="switchLang('ca')">ca</button>
+    <button (click)="switchLang('es')">es</button>
+    <button (click)="switchLang('en')">en</button><br>
+
+    <button (click)="logout()">{{'LOGOUT' | translate}}</button>
+</div>
