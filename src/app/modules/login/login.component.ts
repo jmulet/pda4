@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import {NgForm} from '@angular/forms';
 import { AuthService } from './auth.service';
-import { SessionService } from '../../services/session.service';
+import { SessionService, USER_ROLES } from '../../services/session.service';
 import { TranslateService } from '@ngx-translate/core';
 import { EncryptUtil } from '../../../util/encrypt.util';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 interface LoginSignature {
     ok: boolean;
@@ -17,53 +19,82 @@ interface LoginSignature {
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-    username = '';
-    password= '';
+    isNavbarCollapsed = true;
+    isMobile = false;
+    version: string;
+    credentials = {
+        username: '',
+        password: ''
+    };
     error: string;
+    langFlag: string;
+    loading = false;
+    showAlert = false;
+
     constructor(private router: Router, private auth: AuthService,
-        private session: SessionService, private translate: TranslateService) {
-        console.log('Called constructor login');
+        private session: SessionService, private translate: TranslateService,
+        private messageService: MessageService) {
     }
 
     ngOnInit() {
-        if (this.session.isLoggedIn()) {
+        this.version = this.session.version || '0.0.0';
+        console.log('Called constructor login', this.version);
+        const isIn = this.session.isLoggedIn();
+        if (isIn >= 0) {
             console.log(' Already logged in, should navigate to home');
-            this.router.navigate(['home']);
+            if (isIn < USER_ROLES.student) {
+                this.router.navigate(['home']);
+            } else {
+                this.error = 'The current user has insuficient privileges.';
+            }
         }
         this.translate.addLangs(['ca', 'es', 'en']);
         this.translate.setDefaultLang('es');
-        if(this.session.getLang()){
-            this.translate.use(this.session.getLang());
+        this.langFlag = 'assets/img/es.png';
+        const useLang = this.session.getLang();
+        if (useLang) {
+            this.translate.use(useLang);
+            this.langFlag = 'assets/img/' + useLang + '.png';
         }
         this.session.langChanged$.subscribe( (lang) => {
             console.log('Login fired ', lang);
             this.translate.use(lang);
+            this.langFlag = 'assets/img/' + lang + '.png';
         } );
     }
 
-    doLogin(event) {
+    doLogin(event?) {
         if (event &&  event.keyCode !== 13) {
             return;
         }
-
-        this.auth.login(this.username, this.password).subscribe(
+        this.loading = true;
+        this.auth.login(this.credentials).subscribe(
             (res: LoginSignature) => {
+             this.loading = false;
              if (res.ok) {
                 const user = JSON.parse( EncryptUtil.decrypt(res.user_info) );
                 this.session.setUser(user, res.user_info);
+                this.messageService.add({ severity: 'info', summary: 'Benvingut', detail: user.fullname });
                 this.router.navigate(['home']);
               } else {
                 this.error = res.msg || 'An error occurred';
+                this.credentials.password = '';
+                this.showAlert = true;
               }
             },
             err => {
-              this.error = 'An error occurred';
+              this.loading = false;
+              this.error = 'An error occurred: No backend response';
+              this.showAlert = true;
             }
           );
     }
 
     switchLang(lang) {
         this.session.setLang(lang);
+    }
+
+    clearLocalStorage() {
+
     }
 }

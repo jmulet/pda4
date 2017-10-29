@@ -7,25 +7,28 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+    styleUrls: ['./home.component.css', '../../../assets/css/pw-avatar.min.css']    
 })
 export class HomeComponent implements OnInit {
+    isNavbarCollapsed = true;
     user: any;
+    avatarSrc: string;
+    version: string;
     constructor(private router: Router, private session: SessionService,
         private translate: TranslateService) {
         console.log('Called constructor home');
     }
 
     ngOnInit() {
+        this.version = this.session.version || '0.0.0';
         this.translate.addLangs(['ca', 'es', 'en']);
         this.translate.setDefaultLang('es');
         this.user = this.session.getUser();
-        console.log('you are', this.user);
+        this.avatarSrc = '/assets/img/avatar/' + (this.user.uopts.avatar || 0) + '.png';
         if (this.session.getLang()) {
             this.translate.use(this.session.getLang());
         }
         this.session.langChanged$.subscribe((lang) => {
-            console.log('Home fired ', lang);
             this.translate.use(lang);
         });
     }
@@ -35,7 +38,10 @@ export class HomeComponent implements OnInit {
     }
 
     switchLang(lang) {
-        console.log('Change to ', lang);
         this.session.setLang(lang);
+    }
+
+    pd(evt) {
+        evt.preventDefault();
     }
 }

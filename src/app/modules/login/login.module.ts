@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
@@ -14,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
@@ -26,6 +28,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     CommonModule,
     FormsModule,
+    NgbModule,
     LoginRoutingModule,
     TranslateModule,
     HttpClientModule,
@@ -42,7 +45,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginComponent
   ],
   providers: [
-    AuthService
+    AuthService, MessageService
   ]
 })
 export class LoginModule { }

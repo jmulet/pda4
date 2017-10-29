@@ -1,12 +1,65 @@
-<div>
-    <h1>{{'WELCOME' | translate }}</h1>
-    <h2>
-        {{user.fullname}}
-    </h2>
+<!-- Fixed navbar -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" [routerLink]="['menu']">
+        <img style="display:inline;max-width:40px; margin-top: -12px;" src="assets/img/logo.png" width="40" height="40" />
+        <b>&#960;World</b>
+        <span class="small hidden-xs"> - PDA4</span>
+    </a>
+    <button class="navbar-toggler" (click)="isNavbarCollapsed = !isNavbarCollapsed" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <button (click)="switchLang('ca')">ca</button>
-    <button (click)="switchLang('es')">es</button>
-    <button (click)="switchLang('en')">en</button><br>
+    <div class="collapse navbar-collapse navbar-toggleable-xs" [ngbCollapse]="isNavbarCollapsed" id="navbarSupportedContent">
 
-    <button (click)="logout()">{{'LOGOUT' | translate}}</button>
-</div>
+        <ul class="navbar-nav navbar-dark bg-dark ml-auto">
+
+                <li ngbDropdown class="bg-dark dropdown" style="padding:0">
+                        <a href="#" (click)="pd($event)" ngbDropdownToggle class="nav-link" style="padding:0">
+                            <img [src]='avatarSrc' style="width: 40px; height:40px;" />
+                            <b class="caret"></b>
+                        </a>
+        
+                        <ul ngbDropdownMenu class="nav-item dropdown-menu dropdown-menu-right bg-inverse bg-dark" 
+                        aria-labelledby="split-button" style="right:0px !important;">
+                            <li>
+                                <a href="#" class="nav-link" (click)="logout()">
+                                    {{'LOGOUT' | translate}}
+                                </a>
+                            </li>
+        
+                            <li role="separator"></li>
+                            <li>
+                                <div class="nav-link">
+                                    <button (click)="switchLang('ca')">
+                                        <img src='assets/img/ca.png' />
+                                    </button>
+                                    <button (click)="switchLang('es')">
+                                        <img src='assets/img/es.png' />
+                                    </button>
+                                    <button (click)="switchLang('en')">
+                                        <img src='assets/img/en.png' />
+                                    </button>
+                                </div>
+                            </li>
+        
+                        </ul>
+                    </li>
+
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['list']">Llista</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['progress']">Seguiment</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['reports']">Informes</a>
+            </li>
+
+          
+        </ul>
+    </div>
+</nav>
+
+
+<router-outlet></router-outlet>

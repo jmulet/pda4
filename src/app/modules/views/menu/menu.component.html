@@ -1,0 +1,21 @@
+<div class="container-fluid" style="padding:10px; padding-top:70px; padding-bottom:70px;">
+        <div style="text-align:center">
+                <br>                 
+                <p><button class="btn btn-primary menu-btn" [routerLink]="['/home/list']"><img src="/assets/img/passar-llista.png" style="width:64px;float: left;"/> <span>Passar llista</span> </button></p>
+                <p><button class="btn btn-primary menu-btn" [routerLink]="['/home/activity']" ><img src="/assets/img/activitats.png"  style="width:64px;float: left;"/> <span>Activitats</span> </button></p>
+                <p><button class="btn btn-info menu-btn" [routerLink]="['/home/progress']"><img src="/assets/img/informes.png" style="width:64px;float: left;"/> <span>Seguiment alumne</span> </button></p>
+                <p><button class="btn btn-info menu-btn" [routerLink]="['/home/reports']"><img src="/assets/img/informes.png" style="width:64px;float: left;"/> <span>Llista de FA i RE</span> </button></p>
+        </div>
+</div>
+        
+
+<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav navbar-dark bg-dark mr-auto">
+            <li class="nav-link">Version {{version}}</li>
+        </ul>
+    
+        <ul class="navbar-nav navbar-dark bg-dark ml-auto">
+            <span class="nav-link">by J. Mulet &copy; 2017</span>
+        </ul>
+    
+</nav>

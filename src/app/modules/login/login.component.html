@@ -1,14 +1,89 @@
-<div>
-<h1>Login</h1>
-<button (click)="switchLang('ca')">ca</button>
-<button (click)="switchLang('es')">es</button>
-<button (click)="switchLang('en')">en</button><br>
+<!-- Fixed navbar -->
 
-{{'USERNAME' | translate}}: <input type="text" name="username" [(ngModel)]="username"/><br/>
-{{'PASSWORD' | translate}}: <input type="password" name="password" [(ngModel)]="password" (keydown)="doLogin($event)"/>
 
-<h3>
-    <button (click)="doLogin()"  class="btn btn-sm btn-success">{{'LOGIN' | translate}}</button>
-</h3>
-{{error}}
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+                <img style="display:inline;max-width:40px; margin-top: -12px;" src="assets/img/logo.png" width="40" height="40" />
+                <b>&#960;World</b>
+                <span class="small hidden-xs"> - PDA4</span>
+        </a>
+    <button class="navbar-toggler" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse navbar-toggleable-xs" [ngbCollapse]="isNavbarCollapsed" id="navbarSupportedContent">
+        
+        <ul class="navbar-nav navbar-dark bg-dark ml-auto">
+
+            <li ngbDropdown class="nav-item bg-dark dropdown">
+                <a href="#" ngbDropdownToggle class="nav-link">
+                    <span>{{'LANGUAGE' | translate}}</span>
+                    <img [src]='langFlag' />
+                    <b class="caret"></b>
+                </a>
+ 
+                <ul ngbDropdownMenu role="menu" class="nav-item bg-inverse bg-dark" aria-labelledby="split-button">
+                    <li>
+                        <a href="#" (click)="switchLang('ca')" class="nav-link">
+                            <img src='assets/img/ca.png' /> Català</a>
+                    </li>
+                    <li>
+                        <a href="#" (click)="switchLang('es')" class="nav-link">
+                            <img src='assets/img/es.png' /> Español</a>
+                    </li>
+                    <li>
+                        <a href="#" (click)="switchLang('en')" class="nav-link">
+                            <img src='assets/img/en.png' /> English</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+ 
+<div class="container" style="padding-top:120px; padding-bottom:70px;">
+   
+    <div class="row fullscroll">
+
+        <div class="col-md-12">
+            <div class="well">
+                <label for="uname"><b>{{'USERNAME' | translate}}</b></label>
+                <button *ngIf="isMobile" (click)="clearLocalStorage()" class="btn btn-xs fa fa-remove"></button>
+                <input ng-disabled="loading" id="uname" type="text" class="form-control" autocorrect="off" autocapitalize="none" autocomplete="off"
+                    [(ngModel)]="credentials.username" />
+                <br>
+                <label for="upwd" class="text-capitalize"><b>{{'PASSWORD' | translate}}</b></label>
+                <input ng-disabled="loading" id="upwd" type="password" class="form-control" [(ngModel)]="credentials.password" (keypress)='doLogin($event)'/>
+                <br>
+                <div style="text-align: center">
+                    <button ng-disabled="loading" class="btn btn-primary btn-block" (click)="doLogin()">
+                        <img *ngIf="loading" src="assets/img/ajax-loader-squares.gif" alt="" />
+                        <span>{{'LOGIN' | translate}}</span>
+                    </button>
+                </div>
+                <br>
+                <ngb-alert *ngIf="showAlert" type="danger" (close)="showAlert=false;">{{ error }}</ngb-alert>
+                 
+            </div>
+
+        </div>
+
+
+
+    </div>
+
 </div>
+
+
+<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">  
+        <ul class="navbar-nav navbar-dark bg-dark mr-auto">
+            <li class="nav-link">Version {{version}}</li>
+        </ul>
+
+        <ul class="navbar-nav navbar-dark bg-dark ml-auto">
+            <span class="nav-link">by J. Mulet &copy; 2017</span>    
+        </ul>
+        
+</nav>
+ 

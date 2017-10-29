@@ -1,0 +1,10 @@
+<div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+            {{selection? selection.fullname : '----'}}
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="max-height: 300px; overflow-y:auto;" >
+          <div *ngFor="let s of students" >
+            <button class="dropdown-item" (click)="onSelect(s)">{{s.fullname}}</button>          
+          </div>
+        </div>
+</div>

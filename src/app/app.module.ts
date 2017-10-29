@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +11,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AccessGuard } from './services/accessguard.service';
+
+import { GrowlModule } from 'primeng/components/growl/growl';
+import { MessageService } from 'primeng/components/common/messageservice';
  
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
@@ -25,7 +29,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     NgbModule.forRoot(),
+    GrowlModule,
     TranslateModule.forRoot({
       loader: {
           provide: TranslateLoader,
@@ -37,7 +43,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     SessionService,
-    AccessGuard
+    AccessGuard,
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

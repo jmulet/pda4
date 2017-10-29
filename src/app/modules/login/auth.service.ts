@@ -11,13 +11,11 @@ export class AuthService {
 
   constructor(private session: SessionService, private http: HttpClient) { }
 
-  login(username: String, password: String) {
-    const obj = {username: username, password: password};
-    console.log(obj);
-    const body = EncryptUtil.encrypt(obj);
+  login(credentials) {
+    const body = EncryptUtil.encrypt(credentials);
     const options = {
       headers: new HttpHeaders().set('Content-Type', 'text/plain;charset=UTF-8')
-    }; 
+    };
     return this.http.post('/rest/users/login', body, options);
   }
 }

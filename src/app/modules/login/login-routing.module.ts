@@ -4,7 +4,8 @@ import { LoginComponent } from './login.component';
 import { AccessGuard } from '../../services/accessguard.service';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent, data: { isLoginRoute: true }, canActivate: [ AccessGuard ] }
+  { path: '', component: LoginComponent, data: { isLoginRoute: true }, canActivate: [ AccessGuard ] },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
