@@ -1,0 +1,110 @@
+<div>
+        <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
+        <p-dialog header="Edit Activity" [(visible)]="displayEditDlg" modal="true" width="500" [responsive]="true">
+                        <p-header>
+                                <span *ngIf="beanActivity.id>0">Edit activity {{beanActivity.id}}</span>
+                                <span *ngIf="beanActivity.id===0">Create a new activity</span>
+                        </p-header> 
+                        Trimestre  <input style="width:100%" type="number" [(ngModel)]="beanActivity.trimestre"/> <br/>
+                        
+                        Data <p-calendar [(ngModel)]="beanActivity.dia" [locale]="locale" dateFormat="dd/mm/yy"></p-calendar> <br/>
+                        
+                        Descripcció<br/>
+                        <textarea style="width:100%" [(ngModel)]="beanActivity.desc" rows=3></textarea> 
+                        
+                        Categoria<br/>
+                        <input style="width:100%" [(ngModel)]="beanActivity.category"/> <br/>
+
+                        <!--Pes<br/>
+                        <input style="width:100%" [(ngModel)]="beanActivity.weight"/> <br/>-->
+
+                        <input type="checkbox" [(ngModel)]="beanActivity.visible"/> Visible famílies<br/>
+                               
+
+                        Fórmula<br/>
+                        <textarea style="width:100%" [(ngModel)]="beanActivity.formula" rows=3></textarea> 
+
+
+                        <p-footer>
+                                <button class="btn btn-danger" type="button" (click)="displayEditDlg=false">
+                                       <span class="fa fa-close"></span> No
+                                </button>
+                                <button class="btn btn-success" type="button" (click)="saveActivity()" label="Yes">
+                                                <span class="fa fa-check"></span> Yes
+                                </button>
+                        </p-footer>
+        </p-dialog>
+
+        <div class="topbar-overlay">
+                <h4>
+                        <span class="d-none d-lg-inline">Activitats</span>
+                        <button class="btn  btn-danger rounded-circle" (click)="createActivity()" ><span class="fa fa-plus"></span></button>
+                        <button class="btn  btn-info" (click)="prepareWorbook()" ><span class="fa fa-file-excel-o"></span></button>
+                        <app-group-pick [(selection)]="selectedGroup" (changed)="update($event)" style="width:50%"></app-group-pick>
+                        <span class="fa fa-search"></span>
+                        <input id="typeahead-basic" type="text" class="form-control-static" style="width: 40%" [(ngModel)]="searchText" (ngModelChange)="applyFilter()"
+                                [ngbTypeahead]="search" />
+                        
+                        <!-- [ngbTypeahead]="search" -->
+                </h4>
+        </div>
+
+        <div class="container-fluid" style="padding:10px; padding-top:100px; padding-bottom:20px;">
+
+                        <p-tabMenu [model]="menuItems"></p-tabMenu>
+                        <p-dataTable [value]="rowsFiltered" scrollable="true" [scrollHeight]="scrollHeight" [frozenWidth]="frozenWidth" [unfrozenWidth]="unfrozenWidth" 
+                        [style]="{'height': '80px', 'font-size': '90%'}" [editable]="true">
+
+                                <p-header>{{activeTrimestre}}a Avaluació</p-header>
+                                <p-column field="user" header="Alumne/a" footer="Aproven % mean % Desv" [style]="{'width': frozenWidth, 'height': '80px', 'overflow': 'auto'}" frozen="true">
+                                        <ng-template let-col let-rowstudent="rowData" let-ri="rowIndex" pTemplate="body">
+                                                <div style="font-size: 80%; display:inline-block; height: 50px; overflow: hidden" title="{{rowstudent[col.field].id}}">{{rowstudent[col.field].fullname}}</div>
+                                        </ng-template>
+                                        <ng-template let-col pTemplate="footer">
+                                                Aproven % <br/>
+                                                Mitjana <br/>
+                                                Desv. tipica 
+                                        </ng-template>
+                                </p-column>
+                                <p-column *ngFor="let c of columnsFiltered" [field]="c.field" [header]="c.desc" [footer]="" 
+                                        [style]="{'width':'150px', 'height': '80px', 'overflow': 'auto'}" 
+                                        [editable]="!c.formula">
+                                        <ng-template let-col pTemplate="footer">
+                                                     {{c.aproven}} <br/>
+                                                     {{c.mitjana}} <br/>
+                                                     {{c.desvtipica}} 
+                                        </ng-template>
+                                        <ng-template let-col pTemplate="header">
+                                                <div title="{{c.field}}" [ngStyle]="{'font-size': '80%', 'background': c.visible?'lightyellow':'lightgray'}">
+                                                        <span style="font-size:100%;" class="badge badge-primary pull-left" title="{{c.label}}">
+                                                                {{'$'+c.id}}
+                                                                <span *ngIf="c.formula" style="font-size: 1.2em"  class="fa fa-calculator"></span>
+                                                        </span>
+                                                        <span>{{c.desc}}</span><br/>
+                                                        <button class="btn btn-xs btn-danger" style="font-size: 0.7em" (click)="deleteActivity(c)">
+                                                                <span class="fa fa-trash"></span>
+                                                        </button>
+                                                        <button class="btn btn-xs btn-success" style="font-size: 0.7em"  (click)="editActivity(c)">
+                                                                <span class="fa fa-pencil"></span>
+                                                        </button>
+                                                        
+                                                </div>
+                                        </ng-template>
+                                        <ng-template let-col let-rowstudent="rowData" let-ri="rowIndex" pTemplate="body">
+                                                <span style="display:block; text-align: center; font-weight: bold; font-size: 110%;"
+                                                         [ngStyle]="{'color': (rowstudent[col.field] || {}).grade>=5?'black':'red' }"> 
+                                                         {{formatGrade(rowstudent[col.field])}}</span>
+                                        </ng-template>
+                                        <ng-template let-col let-rowstudent="rowData" pTemplate="editor">
+                                                <input *ngIf="rowstudent[col.field]" [(ngModel)]="rowstudent[col.field].grade"  [style]="{'width':'100%'}" 
+                                                        (blur)="updateGrade(rowstudent[col.field])"/>
+                                        </ng-template>
+                                </p-column>
+
+                        </p-dataTable>
+
+                </div>
+
+
+</div>

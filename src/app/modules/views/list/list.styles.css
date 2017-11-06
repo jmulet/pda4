@@ -1,7 +1,37 @@
-.btn-badge{
-    width: 42px;
-    height: 42px;
-    font-size: 90%;
-    background: white;
-    border-radius: 4px;
+.botonera-overlay {    
+    position:fixed; 
+    bottom: 0; 
+    left:0; 
+    height: 300px;
+    width:100%; 
+    z-index: 10000;
+    background-color: white; 
+    padding:10px;  
+    border: 1px solid gray;
+}
+
+.topbar-overlay {
+    position:fixed; 
+    left:0; 
+    top:57px; 
+    width:100%; 
+    height:40px; 
+    max-height:40px; 
+    background: white; 
+    z-index: 1000;
+}
+
+.semaphore {
+    border: 1px solid gray;
+    border-radius: 100%;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+}
+
+.btn-longclick {
+    width: 100%;
+    height: 70px;
+    padding: 10px;
 }

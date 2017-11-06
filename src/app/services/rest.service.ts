@@ -13,14 +13,9 @@ function extractContent(s) {
 @Injectable()
 export class RestService implements OnInit {
 
-    idUser: number;
-    idGroup: number;
-
     constructor(private session: SessionService, private http: HttpClient) { }
 
     ngOnInit(): void {
-        this.idUser = this.session.getUser().id || 0;
-        this.idGroup = this.session.getSelectedGroup().idGroup || 0;
     }
 
     listStudents(idGroup: number) {
@@ -28,7 +23,8 @@ export class RestService implements OnInit {
     }
 
     getStudents(idGroup: number, day: string, day2?: string) {
-        const body = { idGroup: idGroup, idCreator: this.idUser ||  0, day: day, day2: day2 };
+        const idUser = this.session.getUser().id || 0;
+        const body = { idGroup: idGroup, idCreator: idUser || 0, day: day, day2: day2 };
         return this.http.post('/rest/badges/list', body);
     }
 
@@ -43,19 +39,21 @@ export class RestService implements OnInit {
     }
 
     addBadge(idUser: number, day: string, type: number, rscore: number, idGroup: number) {
-        const body = { idUser: idUser, day: day, type: type, rscore: rscore ||  0, idCreator: this.idUser, idGroup: idGroup };
+        const idCreator = this.session.getUser().id || 0;
+        const body = { idUser: idUser, day: day, type: type, rscore: rscore ||  0, idCreator: idCreator, idGroup: idGroup };
         return this.http.post('/rest/badges/save', body);
     }
 
-    listActivities(idGroup: number, idUser: number, day1: string, day2?: string) {
-        const body = { idCreator: this.idUser, idGroup: idGroup, idUser: idUser, day: day1, day2: day2 };
+    listActivities(idGroup: number, idUser?: number, day1?: string, day2?: string) {
+        const idCreator = this.session.getUser().id || 0;
+        const body = { idCreator: idCreator, idGroup: idGroup, idUser: idUser, day: day1, day2: day2 };
         return this.http.post('/rest/pda/activities/list', body);
     }
 
     saveActivity(bean: any) {
-        const obj = { idGroup: this.idGroup, idCreator: this.idUser };
-        const clone = {...obj, bean};
-        return this.http.post('/rest/pda/activities/save', clone);
+       // const obj = { idGroup: this.idGroup, idCreator: this.idUser };
+       // const clone = {...obj, bean};
+        return this.http.post('/rest/pda/activities/save', bean);
     }
 
     deleteActivity(id: number) {
@@ -67,13 +65,27 @@ export class RestService implements OnInit {
         return this.http.post('/rest/pda/activities/listgrades', body);
     }
 
+    listGradesAll(idGroup: number, filter?: string) {
+        const idUser = this.session.getUser().id || 0;
+        const body = { idCreator: idUser, idGroup: idGroup, filter: filter };
+        return this.http.post('/rest/pda/activities/listall', body);
+    }
+
     saveGrade(idActivity: number, idUser: number, grade?: number) {
         const body = { idActivity: idActivity, idUser: idUser, grade: grade ||  -1 };
         return this.http.post('/rest/pda/activities/savegrade', body);
     }
 
+    saveGrades(list: any[]) {
+        return this.http.post('/rest/pda/activities/savegrade', {list: list});
+    }
+
     deleteGrade(id: number) {
         return this.http.post('/rest/pda/activities/deletegrade', {id: id});
+    }
+
+    deleteGrades(list: number[]) {
+        return this.http.post('/rest/pda/activities/deletegrade', {list: list});
     }
 
     updateGrade(id: number, grade?: number) {
@@ -97,7 +109,7 @@ export class RestService implements OnInit {
 
     sendEmail(email: string, subject: string, html: string, text?: string) {
 
-        let body: any = {to: email, subject: subject};
+        const body: any = {to: email, subject: subject};
 
         if (html && !text) {
             text = extractContent(html);
@@ -120,5 +132,9 @@ export class RestService implements OnInit {
         };
 
         return this.http.post('/rest/gapis/email', bodyEncrypted, options);
+    }
+
+    generateXLS(wb) {
+        return this.http.post('/rest/pda/activities/createxls', {workbook: wb}, { responseType: 'arraybuffer' });
     }
 }

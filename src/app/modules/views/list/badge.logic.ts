@@ -1,12 +1,13 @@
 import { RestService } from '../../../services/rest.service';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 export const BADGES_TYPES = {
     FA: 400,
     RE: 401,
     ATTENDANCE: [400, 401],
     HOMEWORK: [200, 201, 300],
-    CLASSWORK: [202, 203, 204],
+    CLASSWORK: [202, 203, 304],
     BEHAVIOUR: [303, 302, 301, 204, 205, 305]
 };
 
@@ -16,8 +17,8 @@ export class BadgesLogic {
     ids: any;
     rest: RestService;
 
-    constructor(badges, ids, rest) {
-        //console.log('Rest service is injected??? ', rest);
+    constructor(badges, ids, rest, private growl?: MessageService) {
+        // console.log('Rest service is injected??? ', rest);
         this.badges = badges;
         this.ids = ids;
         this.rest = rest;
@@ -84,26 +85,27 @@ export class BadgesLogic {
     removeId(id) {
         const async = new AsyncSubject();
         this.rest.removeBadge(id).subscribe( (d) => {
+            const n = this.badges.length;
+            for (let i = 0; i < n; i++) {
+                if (this.badges[i].id === id) {
+                    this.badges.splice(i, 1);
+                    break;
+                }
+            }
+            if (this.ids) {
+                Object.keys(this.ids).forEach(
+                    (key) => {
+                        if (this.ids[key] === id) {
+                            this.ids[key] = 0;
+                        }
+                    }
+                );
+            }
+
             // Must return an observer to subscribe when all ready
             async.next(d);
             async.complete();
         });
-        const n = this.badges.length;
-        for (let i = 0; i < n; i++) {
-            if (this.badges[i].id === id) {
-                this.badges.splice(i, 1);
-                break;
-            }
-        }
-        if (this.ids) {
-            Object.entries(this.ids).forEach(
-                ([key, value]) => {
-                    if (value === id) {
-                        this.ids[key] = null;
-                    }
-                }
-            );
-        }
         return async;
     }
 

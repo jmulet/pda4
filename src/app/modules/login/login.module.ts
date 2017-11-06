@@ -17,6 +17,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/components/common/messageservice';
 
+// import { ResponsiveModule } from 'ng2-responsive';
+ 
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
   // return new TranslateHttpLoader(http, '/start-angular/SB-Admin-BS4-Angular-4/master/dist/assets/i18n/', '.json');
@@ -32,6 +34,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginRoutingModule,
     TranslateModule,
     HttpClientModule,
+    // ResponsiveModule,
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,
@@ -44,8 +47,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     LoginComponent
   ],
-  providers: [
-    AuthService, MessageService
+  providers: [
+    AuthService,
+    MessageService
   ]
 })
 export class LoginModule { }

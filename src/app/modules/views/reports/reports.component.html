@@ -1,4 +1,87 @@
 <div class="container-fluid" style="padding:10px; padding-top:80px; padding-bottom:70px;">
-        <h4>Reports</h4>
+        <h4>Informes
+                <p-radioButton name="tInforme" value="2" label="Resumit" [(ngModel)]="opts.tipusInforme" inputId="tiopt2"></p-radioButton>
+                <p-radioButton name="tInforme" value="1" label="Detallat" [(ngModel)]="opts.tipusInforme" inputId="tiopt1"></p-radioButton>
+              
+
+                <button class="btn btn-info" (click)="generateReport()">
+                        <span class="fa fa-book">Genera</span>
+                </button>
+        </h4>
+
+        <b>Grup</b>:
+        <app-group-pick [(selection)]="selectedGroup" (changed)="onGrpChange($event)" style="width:50%"></app-group-pick>
+        <span *ngIf="opts.tipusInforme==2">
+               <span class="fa fa-search"></span>
+               <p-autoComplete [(ngModel)]="filtre" [suggestions]="filtres" (completeMethod)="filterCountrySingle($event)" field="name" [size]="30"
+               placeholder="" [minLength]="1"></p-autoComplete>
+        </span>
+        <br/>
+
+        <p *ngIf="opts.tipusInforme==1">
+                <b>Alumnes: </b>
+                <p-pickList [(source)]="students" [target]="studentsSelected" sourceHeader="Disponible" targetHeader="Seleccionat" [responsive]="true"
+                        filterBy="fullname" dragdrop="true" dragdropScope="students" sourceFilterPlaceholder="Cerca per nom" targetFilterPlaceholder="Cerca per nom"
+                        [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}">
+                        <ng-template let-student pTemplate="item">
+                                <span>{{student.fullname}}</span>
+                        </ng-template>
+                </p-pickList>
+        </p>
+
+        <br/>
+        <p>
+                <b>Dates: </b>
+
+                <p-calendar [(ngModel)]="fromDate" [maxDate]="today" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
+                        [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
+                </p-calendar>
+
+                <p-calendar [(ngModel)]="toDate" [maxDate]="today" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
+                        [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
+                </p-calendar>
+        </p>
+        <br/>
+
+        <br/>
+        <p *ngIf="opts.tipusInforme==1">
+                <b>Tipus d'incidències</b>:
+
+                <input type="checkbox" [(ngModel)]="selections.fa" /> FA
+                <input type="checkbox" [(ngModel)]="selections.re" /> RE
+                <input type="checkbox" [(ngModel)]="selections.hw" /> Feina Casa
+                <input type="checkbox" [(ngModel)]="selections.cw" /> Feina Aula
+                <input type="checkbox" [(ngModel)]="selections.bh" /> Comportament
+        </p>
+        <br/>
+
+        <p-dataTable *ngIf="report" [value]="report" expandableRows="true">
+                <p-column *ngIf="opts.tipusInforme==1" expander="true" styleClass="col-icon"></p-column>
+                <p-column field="fullname" header="Estudiant"></p-column>
+                <p-column field="summary.fa" header="FA"></p-column>
+                <p-column field="summary.re" header="RE"></p-column>
+                <p-column header="Casa">
+                        <ng-template let-s="rowData" pTemplate="body">
+                                <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.hw.p}}</span>
+                                <span class="badge badge-danger"  style="font-size:110%; width: 40px;"> {{s.summary.hw.m}}</span>
+                        </ng-template>
+                </p-column>
+                <p-column header="Aula">
+                        <ng-template let-s="rowData" pTemplate="body">
+                                <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.cw.p}}</span>
+                                <span class="badge badge-danger" style="font-size:110%; width: 40px;"> {{s.summary.cw.m}}</span>
+                        </ng-template>
+                </p-column>
+                <p-column header="Comportament">
+                        <ng-template let-s="rowData" pTemplate="body">
+                                <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.bh.p}}</span>
+                                <span class="badge badge-danger" style="font-size:110%; width: 40px;"> {{s.summary.bh.m}}</span>
+                        </ng-template>
+                </p-column>
+                <ng-template *ngIf="opts.tipusInforme===1" let-s pTemplate="rowexpansion">
+                        <div *ngFor="let b of s.badges">
+                                {{b.day}} : {{badgeName(b.type)}}
+                        </div>
+                </ng-template>
+        </p-dataTable>
 </div>
-        

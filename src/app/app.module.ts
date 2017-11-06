@@ -14,7 +14,9 @@ import { AccessGuard } from './services/accessguard.service';
 
 import { GrowlModule } from 'primeng/components/growl/growl';
 import { MessageService } from 'primeng/components/common/messageservice';
- 
+// import { ResponsiveModule } from 'ng2-responsive';
+import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
+
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
   // return new TranslateHttpLoader(http, '/start-angular/SB-Admin-BS4-Angular-4/master/dist/assets/i18n/', '.json');
@@ -31,6 +33,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     BrowserAnimationsModule,
     NgbModule.forRoot(),
+   // ResponsiveModule,
+   Ng2DeviceDetectorModule.forRoot(),
     GrowlModule,
     TranslateModule.forRoot({
       loader: {

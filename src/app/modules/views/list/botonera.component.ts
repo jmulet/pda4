@@ -19,6 +19,7 @@ import { ConfirmationService } from 'primeng/components/common/confirmationservi
 })
 
 export class BotoneraComponent implements OnInit, OnChanges {
+    isBusy: boolean;
     logic: BadgesLogic;
     _day: any;
     _group: any;
@@ -34,11 +35,12 @@ export class BotoneraComponent implements OnInit, OnChanges {
     @Input() set user(s) {
         // console.logonsole.log('Botonera: setting user', s);
         this.student = s;
+        this.isBusy = false;
         // Set the ids to each button
         this.ids = {};
         if (s) {
             this.student.badges.forEach((b) => this.ids[b.type] = b.id);
-            this.logic = new BadgesLogic(this.student.badges, this.ids, this.rest);
+            this.logic = new BadgesLogic(this.student.badges, this.ids, this.rest, this.growl);
             if (this.student.chats.length) {
                 this.message = this.student.chats[0].msg;
             } else {
@@ -80,15 +82,36 @@ export class BotoneraComponent implements OnInit, OnChanges {
     }
 
     handleShort(type, evt) {
+        if (this.isBusy) {
+            this.growl.add({severity: 'warning', summary: 'Busy', detail: 'Can\'t process event since the queue is busy' });
+            return;
+        }
         const id = this.ids[type];
         const score = SCORES[type] ||  0;
         const idGroup = this._group.idGroup;
         const proceed = this.logic.testAction(type, id);
+        const self = this;
+
         if (proceed) {
+
+            this.isBusy = true;
+
             if (id) {
-                this.logic.removeId(id).subscribe((d) => this.changed.emit(evt));
+                this.logic.removeId(id).toPromise().then((d) => {
+                    self.changed.emit(evt);
+                    self.isBusy = false;
+                    // this.growl.add({severity: 'success', summary: 'OK. deleted ' + id});
+                },
+                (err) => self.isBusy = false
+            );
             } else {
-                this.logic.createBadge(this.student.id, this._day, type, score, idGroup).subscribe((d) => this.changed.emit(evt));
+                this.logic.createBadge(this.student.id, this._day, type, score, idGroup).toPromise().then((d) => {
+                    self.changed.emit(evt);
+                    self.isBusy = false;
+                    // this.growl.add({severity: 'success', summary: 'OK. created badge type ' + type});
+                },
+                (err) => self.isBusy = false
+            );
             }
         }
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RestService } from '../../../services/rest.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -18,54 +18,15 @@ const searchOptions: Array<String> = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)'];
 @Component({
     selector: 'app-home-list',
     templateUrl: 'list.component.html',
-    styleUrls: ['../../../../assets/css/pw-avatar.min.css'],
-    styles: [`
-    .botonera-overlay {    
-        position:fixed; 
-        bottom: 0; 
-        left:0; 
-        height: 300px;
-        width:100%; 
-        z-index: 10000;
-        background-color: white; 
-        padding:10px;  
-        border: 1px solid gray;
-    }
- 
-    .topbar-overlay {
-        position:fixed; 
-        left:0; 
-        top:57px; 
-        width:100%; 
-        height:40px; 
-        max-height:40px; 
-        background: white; 
-        z-index: 1000;
-    }
-
-    .semaphore {
-        border: 1px solid gray;
-        border-radius: 100%;
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin-left: 5px;
-    }
-
-    .btn-longclick {
-        width: 100%;
-        height: 70px;
-        padding: 10px;
-    }
-
-    `]
+    styleUrls: ['../../../../assets/css/pw-avatar.min.css', './list.styles.css']
 })
 export class ListComponent implements OnInit {
+    isBusy: boolean;
+    innerWidth: number;
     longEvent: any;
     dateAlert: boolean;
     isHoliday: boolean;
-    today: Date;
-    previousSelectedStudent: any;
+    today: Date; 
 
     selectedGroup2: any;
     isExpanded: boolean;
@@ -79,6 +40,14 @@ export class ListComponent implements OnInit {
     searchText: any;
     locale: any;
     displayDlg: boolean;
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.innerWidth = window.innerWidth;
+      if (!this.selectedStudent && this.innerWidth >= 990) {
+        this.selectedStudent = this.studentsFiltered[0];
+      }
+    }
 
     formatter = (s: any) => s.fullname;
 
@@ -115,8 +84,12 @@ export class ListComponent implements OnInit {
         } else {
             this.studentsFiltered = this.students;
         }
+
+        if (this.innerWidth >= 990) {
+            this.selectedStudent = this.studentsFiltered[0];
+        }
     }
- 
+
     createSemaphore(s) {
         s.semaphore1 = '';
         s.semaphore2 = '';
@@ -165,7 +138,6 @@ export class ListComponent implements OnInit {
         if (g !== this.selectedGroup) {
             this.selectedGroup = g;
             this.selectedStudent = null;
-            this.previousSelectedStudent = null;
         }
         if (g.thmcss) {
             this.session.addCss(g.thmcss);
@@ -174,6 +146,7 @@ export class ListComponent implements OnInit {
         if (!g) {
             return;
         }
+
         this.rest.getStudents(g.idGroup, this.daySelected).subscribe(
             (res: Array<any>) => {
                 res.forEach((s) => {
@@ -182,14 +155,14 @@ export class ListComponent implements OnInit {
                 this.students = res;
                 this.applyFilter();
 
-                if (this.previousSelectedStudent) {
-                    this.selectedStudent = this.previousSelectedStudent;
+                if (this.selectedStudent) {
+                    this.selectedStudent = this.students.filter( (s) => s.id === this.selectedStudent.id)[0];
                 }
             }
         );
     }
 
-    onSelect(s) {
+    onSelect(s, event) {
         event.preventDefault();
         this.selectedStudent = s;
         this.selectedGroup2 = { idGroup: this.selectedGroup.idGroup };
@@ -204,10 +177,9 @@ export class ListComponent implements OnInit {
     longConfirm(mode) {
         this.displayDlg = false;
         if (mode <= 0) {
-            return;
+            return;  
         }
 
- 
         // This is the information of the original badge which was clicked
         const type = this.longEvent.badge.type;
         const badgeId = this.longEvent.badge.idBadge;
@@ -216,7 +188,7 @@ export class ListComponent implements OnInit {
         const isAssistencia = (BADGES_TYPES.ATTENDANCE.indexOf(type) >= 0);
         const isHomework = (BADGES_TYPES.HOMEWORK.indexOf(type) >= 0);
         const isClasswork = (BADGES_TYPES.CLASSWORK.indexOf(type) >= 0);
- 
+
         // If badgeId is set, then the clic was intended to remove the badge
 
         // this.selectedStudent = null;
@@ -271,7 +243,6 @@ export class ListComponent implements OnInit {
         } else {
             this.dateAlert = false;
         }
-        this.previousSelectedStudent = this.selectedStudent;
         this.update(this.selectedGroup);
     }
 

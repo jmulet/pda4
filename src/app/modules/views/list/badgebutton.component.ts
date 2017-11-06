@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SessionService } from '../../../services/session.service';
 import { Color } from '../../shared/color.interpolator';
 
-const i18n_badges = {
+export const i18n_badges = {
     ca: {
         1: 'Comentaris',
         2: 'Regularitat',
@@ -113,6 +113,7 @@ export const rainbow = function(type, score?) {
     }
 };
 
+ 
 @Component({
     selector: 'app-badge-button',
     template: `<button class="btn-badge" [ngStyle]="{border: btnBorder, 'background-color': btnBg}"
@@ -120,9 +121,29 @@ export const rainbow = function(type, score?) {
           appLongPress
           [timeout]="1500"
           (onShortPress)="handleShortPress($event)"
-          (onLongPress)="handleLongPress($event)">{{symbol}}</button>
+          (onLongPress)="handleLongPress($event)"><span class="noselect">{{symbol}}</span></button>
           `,
-    styleUrls: ['./list.styles.css']
+    styles: [
+        `
+        .btn-badge{
+            width: 42px;
+            height: 42px;
+            font-size: 90%;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .noselect {
+            -webkit-touch-callout: none; /* iOS Safari */
+              -webkit-user-select: none; /* Safari */
+               -khtml-user-select: none; /* Konqueror HTML */
+                 -moz-user-select: none; /* Firefox */
+                  -ms-user-select: none; /* Internet Explorer/Edge */
+                      user-select: none; /* Non-prefixed version, currently
+                                            supported by Chrome and Opera */
+          }
+        `
+    ]
 })
 
 
@@ -162,15 +183,17 @@ export class BadgeButtonComponent implements OnInit {
     ngOnInit() {}
 
     handleShortPress(evt) {
-         evt.badge.type = this.type;
-        //console.log('Click: Badge button has recieved this evt ', evt, ' and emits it to botonera');
+        evt.badge = evt.badge || {};
+        evt.badge.type = this.type;
+        // console.log('Click: Badge button has recieved this evt ', evt, ' and emits it to botonera');
         this.changed.emit(evt);
     }
 
     handleLongPress(evt) {
+        evt.badge = evt.badge || {};
         evt.badge.type = this.type;
         evt.badge.idBadge = this._state;
-        //console.log('LongPress: Badge button has recieved this evt ', evt, ' and emits it to botonera');
+        // console.log('LongPress: Badge button has recieved this evt ', evt, ' and emits it to botonera');
         this.changed.emit(evt);
     }
 
@@ -180,6 +203,6 @@ export class BadgeButtonComponent implements OnInit {
         } else {
             this.btnBg = 'white';
         }
-        //console.log('this._state', this._state, this.btnBg);
+        // console.log('this._state', this._state, this.btnBg);
     }
 }

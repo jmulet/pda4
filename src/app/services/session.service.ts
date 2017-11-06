@@ -25,13 +25,20 @@ export const USER_ROLES = {
 
 @Injectable()
 export class SessionService {
-  public version = '0.1.0';
+  public version = '4.1.1';
+  public currentYear: number;
+
   private user: any;
   private selectedGroup: any;
   public langChanged$: EventEmitter<string> = new EventEmitter();
   private lang = 'ca';
+  
   constructor(private router: Router) {
     console.log('Created a session service');
+    // Try to find which is the current academic year (starts beginning of august)
+    const d = new Date();
+    d.setDate(d.getDate() - 244);
+    this.currentYear = d.getFullYear();
   }
 
   public setUser(user, userEncryped) {

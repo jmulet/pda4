@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --proxy-config proxy.conf.json --host 192.168.1.37",
     "build": "ng build --prod --base-href=./",
     "test": "ng test",
     "lint": "ng lint",
@@ -24,6 +24,7 @@
     "@ngx-translate/core": "^8.0.0",
     "@ngx-translate/http-loader": "^2.0.0",
     "@ngrx/store": "^4.1.0",
+    "ng2-device-detector": "^1.0.0",
     "core-js": "^2.5.1",
     "rxjs": "^5.5.0",
     "zone.js": "^0.8.18",
