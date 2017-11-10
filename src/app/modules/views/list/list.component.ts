@@ -12,8 +12,7 @@ import { DateUtils } from '../progress/date.utils';
 
 import { MessageService } from 'primeng/components/common/messageservice';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
-
-const searchOptions: Array<String> = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)', 'G)'];
+import { Subject } from 'rxjs/Subject';
  
 @Component({
     selector: 'app-home-list',
@@ -38,8 +37,11 @@ export class ListComponent implements OnInit {
     students: any;
     selectedGroup: any;
     searchText: any;
+    modelChanged: Subject<string> = new Subject<string>();
     locale: any;
     displayDlg: boolean;
+    suggestions: string[];
+    options = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)'];
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -50,19 +52,13 @@ export class ListComponent implements OnInit {
     }
 
     formatter = (s: any) => s.fullname;
-
-    search = (text$: Observable<string>) =>
-        text$.debounceTime(200)
-            .distinctUntilChanged()
-            .map(term => term === '' ? []
-                : searchOptions.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-
-
+ 
     constructor(private rest: RestService, private session: SessionService, 
         private translate: TranslateService, private growl: MessageService,
         private confirmationService: ConfirmationService) { }
 
     ngOnInit() {
+        this.innerWidth = window.innerWidth;
         this.dateAlert = false;
         this.today = new Date();
         this.dateSelected = new Date();
@@ -73,6 +69,10 @@ export class ListComponent implements OnInit {
         this.update(this.selectedGroup);
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
+        this.modelChanged.subscribe((txt) => {
+            this.searchText = txt;
+            this.applyFilter();
+        });
     }
 
     applyFilter() {
@@ -146,6 +146,8 @@ export class ListComponent implements OnInit {
         if (!g) {
             return;
         }
+
+        this.searchText = '';
 
         this.rest.getStudents(g.idGroup, this.daySelected).subscribe(
             (res: Array<any>) => {
@@ -249,5 +251,14 @@ export class ListComponent implements OnInit {
     goToday() {
         this.dateSelected = new Date();
         this.onDateChange();
+    }
+
+    search($event) {
+        const text = $event.query.toUpperCase();
+        this.suggestions = this.options.filter( (o) => o.toUpperCase().indexOf(text) >= 0 );
+    }
+
+    changed(text: string) {
+        this.modelChanged.next(text);
     }
 }

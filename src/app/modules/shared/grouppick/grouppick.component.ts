@@ -8,6 +8,7 @@ import { SessionService } from '../../../services/session.service';
 })
 
 export class GroupPickComponent implements OnInit {
+    dropdownShown = false;
     selected: any;
     groups: any;
     @Output() changed = new EventEmitter<any>();
@@ -39,5 +40,8 @@ export class GroupPickComponent implements OnInit {
         this.changed.emit(g);
     }
 
+    blur() {
+        setTimeout( () => this.dropdownShown = false, 250);
+    }
 
 }

@@ -5,6 +5,10 @@ import { RestService } from '../../../services/rest.service';
 import { DateUtils } from '../progress/date.utils';
 import { BADGES_TYPES } from '../list/badge.logic';
 import { i18n_badges, SCORES } from '../list/badgebutton.component';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
     selector: 'app-home-reports',
@@ -12,6 +16,7 @@ import { i18n_badges, SCORES } from '../list/badgebutton.component';
 })
 
 export class ReportsComponent implements OnInit {
+    rawReport: any[];
     report: Object;
     students: any[];
     studentsSelected: any[] = [];
@@ -22,7 +27,9 @@ export class ReportsComponent implements OnInit {
     selectedGroup: any;
     selections = {fa: true, re: true, hw: false, cw: false, bh: false};
     filtre = '';
-    filtres = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)'];
+    suggestions: string[];
+    options = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)'];
+    modelChanged: Subject<string> = new Subject<string>();
 
     constructor(private session: SessionService, private growl: MessageService, private rest: RestService) {
 
@@ -38,6 +45,11 @@ export class ReportsComponent implements OnInit {
         this.onGrpChange(this.selectedGroup);
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
+
+        this.modelChanged
+            .debounceTime(700) // wait 300ms after the last event before emitting last event
+            .distinctUntilChanged() // only emit if value is different from previous value
+            .subscribe(filter => this.doFiltering());
     }
 
 
@@ -74,6 +86,7 @@ export class ReportsComponent implements OnInit {
         this.rest.getStudents(this.selectedGroup.idGroup, new DateUtils(this.fromDate).toMysql(),
                               new DateUtils(this.toDate).toMysql()).toPromise().then( (d: any[]) => {
 
+            this.rawReport = d;
             const selectedStudentIds = this.studentsSelected.map( (s) => s.id);
 
 
@@ -127,10 +140,16 @@ export class ReportsComponent implements OnInit {
             });
 
             let filteredReport;
-            if (this.opts.tipusInforme === 1) {
+            if (this.opts.tipusInforme == 1) {
+                // First filter students
                 filteredReport = d.filter( (s) => selectedStudentIds.indexOf(s.id) >= 0);
+                // Now filter selected badges
+                filteredReport.forEach( (s) => {
+                    s.badges = s.badges.filter( (b) => selectedBadgesTypes.indexOf(b.type) >= 0);
+                });
             } else {
                 filteredReport  = d;
+                this.doFiltering();
             }
 
             this.report = filteredReport;
@@ -146,4 +165,26 @@ export class ReportsComponent implements OnInit {
         return (i18n_badges[lang] || {})[type] || desc;
     }
 
+    search($event) {
+            const text = $event.query.toUpperCase();
+            this.suggestions = this.options.filter( (o) => o.toUpperCase().indexOf(text) >= 0 );
+    }
+
+    doFiltering() {
+        if (!this.rawReport) {
+            return;
+        }
+        const f = (this.filtre || '').trim().toLowerCase();
+        if (f) {
+            this.report = this.rawReport.filter( (s) => {
+                return s.fullname.toLowerCase().indexOf(f) >= 0;
+            });
+        } else {
+            this.report = this.rawReport;
+        }
+    }
+
+    changed(text: string) {
+        this.modelChanged.next(text);
+    }
 }

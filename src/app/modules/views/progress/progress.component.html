@@ -1,15 +1,25 @@
-<div class="container-fluid" style="padding:10px; padding-top:80px; padding-bottom:70px;">
-        <h4>Progress</h4>
-        groupSelected: {{groupSelected}}<br>
-        studentSelected: {{studentSelected}}<br>
-
+<div class="container-fluid" style="padding:10px; padding-top:70px; padding-bottom:70px;">
+        <h5>Seguiment</h5>
+        
         <app-group-pick [selection]="groupSelected" (changed)="onGroupSelected($event)"></app-group-pick>
         <app-student-pick [group]="groupSelected" [selection]="studentSelected" (changed)="onStudentSelected($event)"></app-student-pick>
 
-        <div class="ui-g">
-               <div class="ui-g-12 ui-md-6 ui-lg-2 ui-g-nopad" style="background: red">ui-g-12 ui-md-6 ui-lg-2</div>
-               <div class="ui-g-12 ui-md-6 ui-lg-2 ui-label"  style="background: yellow">ui-g-12 ui-md-6 ui-lg-2</div>
-               <div class="ui-g-12 ui-md-12 ui-lg-8"  style="background: green">ui-g-12 ui-md-12 ui-lg-8</div>
+        <br/><br/>
+
+        <div *ngIf="studentSelected">
+                <h5>Missatges</h5>
+                <p-dataList [value]="messages">
+                        <ng-template let-message pTemplate="item">
+                                <div class="ui-g ui-fluid">
+                                        <div class="ui-g-12 ui-md-3">
+                                                <span><b>{{message.when | date: 'dd/MM/yyyy'}}</b></span>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-9">
+                                                {{message.msg}}
+                                        </div>
+                                </div>
+                        </ng-template>
+                </p-dataList> 
         </div>
  </div>
         

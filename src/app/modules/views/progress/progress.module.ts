@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProgressComponent } from './progress.component';
 import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedModule } from '../../shared/shared.module';
 import { GroupPickComponent } from '../../shared/grouppick/grouppick.component';
 import { StudentPickComponent } from '../../shared/studentpick/studentpick.component';
+import { DataListModule } from 'primeng/components/datalist/datalist';
 
 const routes: Routes = [
   { path: '', component: ProgressComponent },
@@ -16,8 +16,8 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule,
     SharedModule,
+    DataListModule,
     RouterModule.forChild(routes)
   ],
   exports: [RouterModule],
@@ -26,6 +26,4 @@ const routes: Routes = [
   ]
 
 })
-export class ProgressModule { 
-    
-}
+export class ProgressModule {}

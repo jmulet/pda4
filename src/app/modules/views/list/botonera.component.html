@@ -1,7 +1,7 @@
 <div class="ui-panel" style="padding: 0">
 <div class="ui-panel-content" style="padding: 0">
     <p-tabView>
-        <p-tabPanel header="Badges" [selected]="true">
+        <p-tabPanel header="Insígnies" [selected]="true">
                 <table id="buttonstable" class="table table-responsive" style="display: table !important;">
                         <thead>
                             <tr style="font-size:80%">
@@ -64,7 +64,7 @@
                         </tbody>
                     </table>
         </p-tabPanel>
-        <p-tabPanel header="Messages">
+        <p-tabPanel header="Missatges">
                     <button class="btn btn-sm btn-primary" [disabled]="editMsg" (click)="editMsg=true"><span class="fa fa-pencil"> Edit</span></button>
                     <button class="btn btn-sm btn-danger" *ngIf="editMsg" (click)="cancelEditMsg()"><span class="fa fa-undo"> Cancel</span></button>
                     <button class="btn btn-sm btn-success" *ngIf="editMsg" (click)="saveEditMsg()"><span class="fa fa-save"> Save</span></button>
@@ -72,9 +72,7 @@
                     <br/>
                     <textarea [disabled]="!editMsg" [(ngModel)]="message" style="width:100%" rows="5"></textarea>
         </p-tabPanel>
-        <p-tabPanel header="Other">
-                    To be done    
-        </p-tabPanel>
+         
     </p-tabView>
             
             

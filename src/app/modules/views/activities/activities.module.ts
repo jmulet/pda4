@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ActivitiesComponent } from './activities.component';
 import { SharedModule } from '../../shared/shared.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataTableModule } from 'primeng/components/datatable/datatable';
@@ -19,7 +18,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    NgbModule,
     CommonModule,
     FormsModule,
     SharedModule,

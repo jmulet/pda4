@@ -7,7 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SessionService } from './services/session.service';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AccessGuard } from './services/accessguard.service';
@@ -32,9 +31,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    NgbModule.forRoot(),
-   // ResponsiveModule,
-   Ng2DeviceDetectorModule.forRoot(),
+    Ng2DeviceDetectorModule.forRoot(),
     GrowlModule,
     TranslateModule.forRoot({
       loader: {

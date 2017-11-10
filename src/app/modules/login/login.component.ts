@@ -20,6 +20,7 @@ interface LoginSignature {
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+    dropdownShown: boolean;
 
     isNavbarCollapsed = true;
     isMobile = false;
@@ -117,15 +118,30 @@ export class LoginComponent implements OnInit {
           );
     }
 
-    switchLang(lang) {
+    switchLang(lang, evt) {
+        evt.preventDefault();
+        this.dropdownShown = false;
         this.session.setLang(lang);
     }
 
     clearLocalStorage() {
-
+        this.credentials.username = '';
+        this.credentials.password = '';
+        this.showAlert = false;
+        this.error = null;
+        localStorage.removeItem('pwMobile');
     }
 
     thisUserAgent($event) {
         console.log($event);
+    }
+
+    pd(evt) {
+        evt.preventDefault();
+        this.dropdownShown = !this.dropdownShown;
+    }
+
+    blur() {
+        setTimeout( () => this.dropdownShown = false, 250);
     }
 }

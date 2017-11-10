@@ -14,14 +14,13 @@
 </p-dialog>
 
 <div class="topbar-overlay">
-                <h4>
+                <h5>
                         <!--<span class="hidden-sm-down">Llista</span>-->
                         <app-group-pick [(selection)]="selectedGroup" (changed)="update($event)" style="width:50%"></app-group-pick>
                         <span class="fa fa-search"></span>
-                        <input id="typeahead-basic" type="text" class="form-control-static" style="width: 40%" [(ngModel)]="searchText"
-                               (ngModelChange)="applyFilter()" [ngbTypeahead]="search"/>
-                               <!-- [ngbTypeahead]="search" -->                       
-                </h4>
+                        <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15"
+                        placeholder="Filtre" [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>                     
+                </h5>               
 </div>
 
 <div class="container-fluid" style="padding:10px; padding-top:120px; padding-bottom:310px;">
@@ -75,6 +74,7 @@
         </div>
 
 </div>
+
 
 
 <div *ngIf="selectedStudent && innerWidth<990" class="botonera-overlay">

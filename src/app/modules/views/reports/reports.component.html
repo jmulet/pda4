@@ -1,20 +1,19 @@
-<div class="container-fluid" style="padding:10px; padding-top:80px; padding-bottom:70px;">
-        <h4>Informes
+<div class="container-fluid" style="padding:10px; padding-top:70px; padding-bottom:70px;">
+        <h5>Informes
                 <p-radioButton name="tInforme" value="2" label="Resumit" [(ngModel)]="opts.tipusInforme" inputId="tiopt2"></p-radioButton>
                 <p-radioButton name="tInforme" value="1" label="Detallat" [(ngModel)]="opts.tipusInforme" inputId="tiopt1"></p-radioButton>
               
-
                 <button class="btn btn-info" (click)="generateReport()">
                         <span class="fa fa-book">Genera</span>
                 </button>
-        </h4>
+        </h5>
 
         <b>Grup</b>:
         <app-group-pick [(selection)]="selectedGroup" (changed)="onGrpChange($event)" style="width:50%"></app-group-pick>
         <span *ngIf="opts.tipusInforme==2">
                <span class="fa fa-search"></span>
-               <p-autoComplete [(ngModel)]="filtre" [suggestions]="filtres" (completeMethod)="filterCountrySingle($event)" field="name" [size]="30"
-               placeholder="" [minLength]="1"></p-autoComplete>
+               <p-autoComplete [(ngModel)]="filtre" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15"
+               placeholder="Filtra" [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>
         </span>
         <br/>
 
@@ -33,11 +32,11 @@
         <p>
                 <b>Dates: </b>
 
-                <p-calendar [(ngModel)]="fromDate" [maxDate]="today" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
+                <p-calendar [(ngModel)]="fromDate" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
                         [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
                 </p-calendar>
 
-                <p-calendar [(ngModel)]="toDate" [maxDate]="today" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
+                <p-calendar [(ngModel)]="toDate" [minDate]="fromDate" [inputStyle]="{width: '120px'}" [disabledDays]="[0,6]" [showButtonBar]="true"
                         [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
                 </p-calendar>
         </p>
@@ -56,7 +55,7 @@
         <br/>
 
         <p-dataTable *ngIf="report" [value]="report" expandableRows="true">
-                <p-column *ngIf="opts.tipusInforme==1" expander="true" styleClass="col-icon"></p-column>
+                <p-column [hidden]="opts.tipusInforme==2" expander="true" styleClass="col-icon"></p-column>
                 <p-column field="fullname" header="Estudiant"></p-column>
                 <p-column field="summary.fa" header="FA"></p-column>
                 <p-column field="summary.re" header="RE"></p-column>
@@ -78,10 +77,12 @@
                                 <span class="badge badge-danger" style="font-size:110%; width: 40px;"> {{s.summary.bh.m}}</span>
                         </ng-template>
                 </p-column>
-                <ng-template *ngIf="opts.tipusInforme===1" let-s pTemplate="rowexpansion">
-                        <div *ngFor="let b of s.badges">
-                                {{b.day}} : {{badgeName(b.type)}}
-                        </div>
+                <ng-template let-s pTemplate="rowexpansion">
+                        <div [hidden]="opts.tipusInforme===2">
+                                <div *ngFor="let b of s.badges">
+                                        <span style="font-size:110%">{{b.day | date: 'dd-MM-yyyy'}} : {{badgeName(b.type)}}</span>
+                                </div>
+                        </div>  
                 </ng-template>
         </p-dataTable>
 </div>

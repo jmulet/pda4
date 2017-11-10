@@ -7,9 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css', '../../../assets/css/pw-avatar.min.css']    
+    styleUrls: ['./home.component.css', '../../../assets/css/pw-avatar.min.css']
 })
 export class HomeComponent implements OnInit {
+    dropdownShown: boolean;
     isNavbarCollapsed = true;
     user: any;
     avatarSrc: string;
@@ -33,15 +34,23 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    logout() {
+    logout(evt) {
+        evt.preventDefault();
+        this.dropdownShown = false;
         this.session.logout();
     }
 
     switchLang(lang) {
+        this.dropdownShown = false;
         this.session.setLang(lang);
     }
 
     pd(evt) {
         evt.preventDefault();
+        this.dropdownShown = !this.dropdownShown;
+    }
+
+    blur() {
+        setTimeout( () => this.dropdownShown = false, 250);
     }
 }

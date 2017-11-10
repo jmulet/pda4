@@ -9,6 +9,7 @@ import { RestService } from '../../../services/rest.service';
 })
 
 export class ProgressComponent implements OnInit {
+    messages: any[];
     students: Object;
     user: any;
     groupSelected: any;
@@ -20,7 +21,7 @@ export class ProgressComponent implements OnInit {
         this.user = this.session.getUser();
         if (this.user) {
             this.groupSelected = this.user.groups[0];
-        }
+        } 
         this.update();
     }
 
@@ -38,12 +39,10 @@ export class ProgressComponent implements OnInit {
         if (!this.groupSelected ||  !this.studentSelected) {
             return;
         }
-        this.rest.getStudents(this.groupSelected.idGroup, '').subscribe(
-            (res) => {
-                this.students = res;
-            }
-        );
-        console.log('ProgressView update on', this.groupSelected, this.studentSelected);
+        const idGroup = this.groupSelected.idGroup;
+        const idTo = this.studentSelected.id;
+        const idFrom = this.user.id;
+        this.rest.listComments(idFrom, idTo, idGroup).toPromise().then( (d: any[]) => this.messages = d);
     }
 
 }

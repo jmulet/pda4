@@ -11,7 +11,7 @@ import { RestService } from '../../../services/rest.service';
 })
 
 export class StudentPickComponent implements OnInit, OnChanges {
-
+    dropdownShown = false;
     @Input() group: any;
     @Input() selection: any;
     @Output() changed = new EventEmitter<any>();
@@ -25,6 +25,7 @@ export class StudentPickComponent implements OnInit, OnChanges {
                     this.students = res;
                     if (this.students.length) {
                         this.selection = this.students[0];
+                        this.changed.emit(this.selection);
                     }
                 }
             );
@@ -51,5 +52,9 @@ export class StudentPickComponent implements OnInit, OnChanges {
     onSelect(s) {
         this.selection = s;
         this.changed.emit(s);
+    }
+
+    blur() {
+        setTimeout( () => this.dropdownShown = false, 250);
     }
 }

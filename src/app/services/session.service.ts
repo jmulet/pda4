@@ -25,7 +25,7 @@ export const USER_ROLES = {
 
 @Injectable()
 export class SessionService {
-  public version = '4.1.1';
+  public version = '5.2.1';
   public currentYear: number;
 
   private user: any;

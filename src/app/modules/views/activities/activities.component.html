@@ -39,14 +39,11 @@
         <div class="topbar-overlay">
                 <h4>
                         <span class="d-none d-lg-inline">Activitats</span>
-                        <button class="btn  btn-danger rounded-circle" (click)="createActivity()" ><span class="fa fa-plus"></span></button>
-                        <button class="btn  btn-info" (click)="prepareWorbook()" ><span class="fa fa-file-excel-o"></span></button>
+                        <button class="btn btn-sm  btn-danger rounded-circle" (click)="createActivity()" ><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm  btn-info" (click)="prepareWorbook()" ><span class="fa fa-file-excel-o"></span></button>
                         <app-group-pick [(selection)]="selectedGroup" (changed)="update($event)" style="width:50%"></app-group-pick>
                         <span class="fa fa-search"></span>
-                        <input id="typeahead-basic" type="text" class="form-control-static" style="width: 40%" [(ngModel)]="searchText" (ngModelChange)="applyFilter()"
-                                [ngbTypeahead]="search" />
-                        
-                        <!-- [ngbTypeahead]="search" -->
+                        <input id="typeahead-basic" type="text" class="form-control-static" style="width: 32%" [(ngModel)]="searchText" (ngModelChange)="applyFilter()"/>
                 </h4>
         </div>
 

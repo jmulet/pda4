@@ -1,0 +1,10 @@
+Removed from package.json
+
+Do not rely on bootstrap components since primeng are the main widgets in this project
+Do not need jquery anymore, since bootstrap4 is merely a css asset.
+
+,
+    "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.5",
+    "angular-4-data-table-bootstrap-4": "0.2.0",
+    "jquery": "^1.9.1",
+    "popper.js": "^1.12.3"

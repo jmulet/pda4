@@ -87,10 +87,10 @@ export class ActivitiesComponent implements OnInit {
     ngOnInit() {
         const self = this;
         this.menuItems = [
-            {label: '1a Aval.', icon: 'fa-book', command: ($event) => { self.activeTrimestre = 1; self.update(this.selectedGroup); } },
-            {label: '2a Aval.', icon: 'fa-book', command: ($event) => { self.activeTrimestre = 2; self.update(this.selectedGroup);  }},
-            {label: 'Ordinària', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 3; self.update(this.selectedGroup); }},
-            {label: 'Extraordinària', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 4; self.update(this.selectedGroup); }}
+            {label: '1a', icon: 'fa-book', command: ($event) => { self.activeTrimestre = 1; self.update(this.selectedGroup); } },
+            {label: '2a', icon: 'fa-book', command: ($event) => { self.activeTrimestre = 2; self.update(this.selectedGroup);  }},
+            {label: 'Ord.', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 3; self.update(this.selectedGroup); }},
+            {label: 'Extr.', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 4; self.update(this.selectedGroup); }}
         ];
 
         this.scrollHeight = (window.innerHeight - 300) + 'px';
@@ -353,7 +353,7 @@ export class ActivitiesComponent implements OnInit {
         }
         this.displayEditDlg = false;
         // commit changes from this.beanActivity
-          
+
         const cB = this.beanActivity;
         const sB = {
             id: cB.id, trimestre: cB.trimestre, desc: cB.desc, dia: new DateUtils(cB.dia).toMysql(),

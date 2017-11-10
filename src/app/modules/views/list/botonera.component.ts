@@ -83,7 +83,7 @@ export class BotoneraComponent implements OnInit, OnChanges {
 
     handleShort(type, evt) {
         if (this.isBusy) {
-            this.growl.add({severity: 'warning', summary: 'Busy', detail: 'Can\'t process event since the queue is busy' });
+            // this.growl.add({severity: 'warning', summary: 'Busy', detail: 'Can\'t process event since the queue is busy' });
             return;
         }
         const id = this.ids[type];

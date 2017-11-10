@@ -5,36 +5,36 @@
         <a class="navbar-brand" href="#">
                 <img style="display:inline;max-width:40px; margin-top: -12px;" src="assets/img/logo.png" width="40" height="40" />
                 <b>&#960;World</b>
-                <span class="small hidden-xs"> - PDA4</span>
+                <span class="small hidden-xs"> - PDA</span>
         </a>
     <button class="navbar-toggler" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse navbar-toggleable-xs" [ngbCollapse]="isNavbarCollapsed" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse navbar-toggleable-xs" [class.show]="!isNavbarCollapsed"  id="navbarSupportedContent">
         
         <ul class="navbar-nav navbar-dark bg-dark ml-auto">
 
-            <li ngbDropdown class="nav-item bg-dark dropdown">
-                <a href="#" ngbDropdownToggle class="nav-link">
+            <li class="nav-item bg-dark dropdown">
+                <a href="#" class="nav-link" (click)="pd($event)" (blur)="blur()">
                     <span>{{'LANGUAGE' | translate}}</span>
                     <img [src]='langFlag' />
                     <b class="caret"></b>
                 </a>
  
-                <ul ngbDropdownMenu role="menu" class="nav-item bg-inverse bg-dark" aria-labelledby="split-button">
+                <ul role="menu" class="nav-item bg-inverse bg-dark dropdown-menu dropdown-menu-right" [class.show]="dropdownShown" aria-labelledby="split-button">
                     <li>
-                        <a href="#" (click)="switchLang('ca')" class="nav-link">
-                            <img src='assets/img/ca.png' /> Català</a>
+                        <a href="#" (click)="switchLang('ca', $event)" class="nav-link">
+                            <img src='assets/img/ca.png'/> Català</a>
                     </li>
                     <li>
-                        <a href="#" (click)="switchLang('es')" class="nav-link">
-                            <img src='assets/img/es.png' /> Español</a>
+                        <a href="#" (click)="switchLang('es', $event)" class="nav-link">
+                            <img src='assets/img/es.png'/> Español</a>
                     </li>
                     <li>
-                        <a href="#" (click)="switchLang('en')" class="nav-link">
-                            <img src='assets/img/en.png' /> English</a>
+                        <a href="#" (click)="switchLang('en', $event)" class="nav-link">
+                            <img src='assets/img/en.png'/> English</a>
                     </li>
                 </ul>
             </li>
@@ -64,7 +64,12 @@
                     </button>
                 </div>
                 <br>
-                <ngb-alert *ngIf="showAlert" type="danger" (close)="showAlert=false;">{{ error }}</ngb-alert>
+                <div class="alert alert-danger" *ngIf="showAlert">
+                    {{ error }}
+                    <button type="button" class="close" aria-label="Close" (click)="showAlert=false">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                  
             </div>
 

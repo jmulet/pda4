@@ -9,7 +9,6 @@ import { AccessGuard } from '../../services/accessguard.service';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../shared/shared.module';
 import { RestService } from '../../services/rest.service';
 
@@ -23,7 +22,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     CommonModule,
     HomeRoutingModule,
-    NgbModule,
     SharedModule,
     TranslateModule.forChild({
       loader: {

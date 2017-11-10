@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ListComponent } from './list.component';
 import { CommonModule, NgStyle } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
 import { GroupPickComponent } from '../../shared/grouppick/grouppick.component';
 import { FormsModule } from '@angular/forms';
@@ -16,14 +15,14 @@ import { TabViewModule } from 'primeng/components/tabview/tabview';
 import { DialogModule } from 'primeng/components/dialog/dialog';
 import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdialog';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
- 
+import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
+
 const routes: Routes = [
   { path: '', component: ListComponent },
 ];
 
 @NgModule({
   imports: [
-    NgbModule,
     CommonModule,
     FormsModule,
     SharedModule,
@@ -31,6 +30,7 @@ const routes: Routes = [
     TabViewModule,
     DialogModule,
     ConfirmDialogModule,
+    AutoCompleteModule,
     RouterModule.forChild(routes)
 ],
   exports: [RouterModule],
