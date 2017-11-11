@@ -3,10 +3,19 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
 
-.ui-widget-overlay {z-index: 10000 !important;}
+/*
+.ui-widget-overlay {
+    z-index: 10000 !important;
+}
+*/
+ 
 .ui-dialog {z-index: 10001 !important;}
 .ui-confirmdialog {z-index: 10001 !important;}
 .ui-datatable-scrollable-footer {overflow: auto !important;}
+
+.pcalendar-fullwidth .ui-datepicker-inline {
+    width: 100% !important;
+}
 
 body, html {
     font-size: 90%;

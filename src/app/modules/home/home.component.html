@@ -1,5 +1,23 @@
+<p-sidebar [(visible)]="sideBarShown" [ngStyle]="{width:'30px'}">
+    <div style="height:100%; padding-top: 60px; padding-bottom:60px">
+            <a class="nav-link" href="https://piworld.es" target="_blank">piWorld.es</a>
+            <hr/>
+
+            <a class="nav-link" [routerLink]="['list']">Llista</a>
+            <a class="nav-link" [routerLink]="['activities']">Activitats</a>
+            <a class="nav-link" [routerLink]="['progress']">Seguiment</a>  
+            <a class="nav-link" [routerLink]="['reports']">Informes</a>
+    </div>    
+    
+</p-sidebar>
+
 <!-- Fixed navbar -->
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+
+    <a href="" class="navbar-brand" (click)="toggleSideBar($event)">
+        <span class="fa fa-arrow-circle-down"></span>
+    </a>
+
     <a class="navbar-brand" [routerLink]="['menu']">
         <img style="display:inline;max-width:40px; margin-top: -12px;" src="assets/img/logo.png" width="40" height="40" />
         <b>&#960;World</b>

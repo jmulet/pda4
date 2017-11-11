@@ -24,6 +24,7 @@
     "@ngrx/store": "^4.1.1",
     "@ngx-translate/core": "^8.0.0",
     "@ngx-translate/http-loader": "^2.0.0",
+    "ngx-clipboard": "^8.1.1",
     "bootstrap": "^4.0.0-beta.2",
     "core-js": "^2.5.1",
     "font-awesome": "^4.7.0",

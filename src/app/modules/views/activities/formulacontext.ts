@@ -202,7 +202,7 @@ export class FormulaContext {
         const pow = Math.pow(10, n);
         return Math.floor(x * pow) / pow;
     };
-    
+
     // Alias
         context.PROMEDIO = context.AVERAGE;
         context.PROMIG = context.AVERAGE;

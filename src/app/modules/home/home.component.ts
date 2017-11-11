@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
     styleUrls: ['./home.component.css', '../../../assets/css/pw-avatar.min.css']
 })
 export class HomeComponent implements OnInit {
+    sideBarShown: boolean;
     dropdownShown: boolean;
     isNavbarCollapsed = true;
     user: any;
@@ -52,5 +53,10 @@ export class HomeComponent implements OnInit {
 
     blur() {
         setTimeout( () => this.dropdownShown = false, 250);
+    }
+
+    toggleSideBar(evt) {
+        evt.preventDefault();
+        this.sideBarShown = !this.sideBarShown;
     }
 }

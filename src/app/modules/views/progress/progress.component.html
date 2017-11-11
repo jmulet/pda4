@@ -1,25 +1,136 @@
 <div class="container-fluid" style="padding:10px; padding-top:70px; padding-bottom:70px;">
-        <h5>Seguiment</h5>
-        
+        <h5>Seguiment
+                <button class="btn btn-sm btn-info" ngxClipboard [cbContent]="summaryText" (cbOnSuccess)="onClipboardCopy()">
+                        <span class="fa fa-clipboard"></span>
+                </button>
+        </h5>
+
         <app-group-pick [selection]="groupSelected" (changed)="onGroupSelected($event)"></app-group-pick>
         <app-student-pick [group]="groupSelected" [selection]="studentSelected" (changed)="onStudentSelected($event)"></app-student-pick>
 
-        <br/><br/>
+        <br/>
+        <br/>
 
         <div *ngIf="studentSelected">
+                <h5>Incidències
+                        <p-dropdown [options]="badgesOptions" [(ngModel)]="badgesType"></p-dropdown>
+                </h5>
+
+                <p-overlayPanel #op [showCloseIcon]="true" [dismissable]="true">
+                        <div *ngIf="detail" style="max-width: 300px">
+                                <div class="alert alert-info">
+                                        <b>{{detail.day}}</b>
+                                </div>
+
+                                <ul class="list">
+                                        <li *ngFor="let inc of detail.badges">
+                                                {{description(inc)}}
+                                        </li>
+                                </ul>
+
+                                <div *ngIf="detail.chat">
+                                        <hr/>
+                                        <span class="fa fa-pencil"></span>
+                                        {{detail.chat}}
+                                </div>
+                        </div>
+                </p-overlayPanel>
+
+                <p-calendar class="pcalendar-fullwidth" [(ngModel)]="selectedDate" [inline]="true" dateFormat="dd/mm/yy" [locale]="locale"
+                        [disabledDays]="[0,6]" [disabledDates]="holidays" (onMonthChange)="op.hide()">
+                        <ng-template pTemplate="date" let-date>
+                                <div (click)="onDateClick($event, date, op)" [ngSwitch]="badgesType">
+                                        <span>
+                                                <b>{{date.day}}</b>
+                                        </span>
+                                        <div *ngSwitchCase="0">
+                                                <div class="semaphore" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).fare}"></div>
+                                                <div class="semaphore" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).hw}"></div>
+                                                <div class="semaphore" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).cw}"></div>
+                                                <div class="semaphore" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).bh}"></div>
+                                                <span *ngIf="(semaphoreFor[formatDate(date)] || {chat: false}).chat" class="fa fa-pencil"></span>
+                                        </div>
+                                        <div *ngSwitchCase="1">
+                                                <div class="semaphore-block" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).fare}">
+                                                        <span *ngIf="(semaphoreFor[formatDate(date)] || {chat: false}).chat" class="fa fa-pencil"></span>
+                                                </div>
+                                        </div>
+                                        <div *ngSwitchCase="2">
+                                                <div class="semaphore-block" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).cw}">
+                                                        <span *ngIf="(semaphoreFor[formatDate(date)] || {chat: false}).chat" class="fa fa-pencil"></span>
+                                                </div>
+                                        </div>
+                                        <div *ngSwitchCase="3">
+                                                <div class="semaphore-block" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).hw}">
+                                                        <span *ngIf="(semaphoreFor[formatDate(date)] || {chat: false}).chat" class="fa fa-pencil"></span>
+                                                </div>
+                                        </div>
+                                        <div *ngSwitchCase="4">
+                                                <div class="semaphore-block" [ngStyle]="{'background-color': (semaphoreFor[formatDate(date)] || {}).bh}">
+                                                        <span *ngIf="(semaphoreFor[formatDate(date)] || {chat: false}).chat" class="fa fa-pencil"></span>
+                                                </div>
+                                        </div>
+                                </div>
+                        </ng-template>
+                </p-calendar>
+
+                <br/><br/>
+                <h5>Resum</h5>
+                <table class="table table-hover table-bordered table-responsive" *ngIf='summary'>
+                        <thead>
+                                <tr><th>Aspecte</th><th>Qualificació</th></tr>
+                        </thead>
+                        <tbody>
+                                <tr><td>Assistència</td><td> {{summary.fa}} / {{summary.ns}} {{ summary.fa_tpc }} % </td></tr>
+                                <tr><td>Deures</td><td> {{summary.hw}} / {{summary.nhw}} {{ summary.hw_tpc }} % </td></tr>
+                                <tr><td>Feina a l'aula</td><td> {{summary.cw}} / {{summary.ncw}} {{ summary.cw_tpc }} % </td></tr>
+                                <tr><td>Bon comportament</td><td> {{summary.bh}} / {{summary.ns}} {{ summary.bh_tpc }} % </td></tr>
+                        </tbody>
+                </table>
+
+                <br/>
+                <br/>
                 <h5>Missatges</h5>
                 <p-dataList [value]="messages">
                         <ng-template let-message pTemplate="item">
                                 <div class="ui-g ui-fluid">
                                         <div class="ui-g-12 ui-md-3">
-                                                <span><b>{{message.when | date: 'dd/MM/yyyy'}}</b></span>
+                                                <span>
+                                                        <b>{{message.when | date: 'dd/MM/yyyy'}}</b>
+                                                </span>
                                         </div>
                                         <div class="ui-g-12 ui-md-9">
                                                 {{message.msg}}
                                         </div>
                                 </div>
                         </ng-template>
-                </p-dataList> 
+                </p-dataList>
+
+                <br/>
+                <h5>Notes</h5>
+                <p-dataTable [value]="grades">
+                        <p-column field="trimestre" header="Trim." [style]="{'width':'30px'}"></p-column>
+                        <p-column field="dia" header="Dia" [style]="{'width':'100px'}">
+                                <ng-template let-row="rowData" pTemplate="body"> 
+                                        {{row.dia | date: 'dd/MM/yyyy'}}
+                                </ng-template>
+                        </p-column>
+                        <p-column field="desc" header="Activitat"></p-column>
+                        <p-column filed="grade" header="Nota" [style]="{'width':'70px'}">
+                                <ng-template let-row="rowData" pTemplate="body"> 
+                                          <div [ngSwitch]="row.grade">
+                                                <div *ngSwitchCase="-1">
+                                                        <em style="color: red">Pendent</em>
+                                                </div>
+                                                <div *ngSwitchCase="-2">
+                                                        <em style="color: red">NP</em>
+                                                </div>
+                                                <div *ngSwitchDefault>
+                                                        <span [ngStyle]="{color: row.grade<5?'red':'black'}">{{row.grade}}</span>
+                                                </div>
+                                        </div>
+                                </ng-template>
+                        </p-column>
+                </p-dataTable>
         </div>
- </div>
-        
+</div>

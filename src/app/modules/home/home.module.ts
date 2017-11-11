@@ -12,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { RestService } from '../../services/rest.service';
 
+import { SidebarModule } from 'primeng/components/sidebar/sidebar';
+
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
   // return new TranslateHttpLoader(http, '/start-angular/SB-Admin-BS4-Angular-4/master/dist/assets/i18n/', '.json');
@@ -23,6 +25,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CommonModule,
     HomeRoutingModule,
     SharedModule,
+    SidebarModule,
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,
