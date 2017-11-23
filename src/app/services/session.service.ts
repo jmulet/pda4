@@ -25,14 +25,15 @@ export const USER_ROLES = {
 
 @Injectable()
 export class SessionService {
-  public version = '5.2.1';
+  public version = '5.5.0';
   public currentYear: number;
 
   private user: any;
   private selectedGroup: any;
   public langChanged$: EventEmitter<string> = new EventEmitter();
   private lang = 'ca';
-  
+  ALLOWED_GROUP_ROLES = [USER_ROLES.admin, USER_ROLES.teacher, USER_ROLES.teacheradmin];
+
   constructor(private router: Router) {
     console.log('Created a session service');
     // Try to find which is the current academic year (starts beginning of august)
@@ -41,32 +42,52 @@ export class SessionService {
     this.currentYear = d.getFullYear();
   }
 
-  public setUser(user, userEncryped) {
+  public setUser(user) {
     this.user = user;
-    localStorage.setItem('pwSession4', userEncryped);
+    const obj: any = {
+      user: user,
+      css: []
+    };
+    const userEncryped = EncryptUtil.encrypt( JSON.stringify(obj));
+    localStorage.setItem('pwSession', userEncryped);
   }
 
   public getUser(): any {
     return this.user;
   }
 
+  public getUserGroups(): any[] {
+    const user = this.getUser();
+    if (user && user.groups) {
+      return user.groups.filter( (g) => this.ALLOWED_GROUP_ROLES.indexOf(g.eidRole) >= 0 && (g.groupYear + 2000) === this.currentYear );
+    } else {
+      return [];
+    }
+  }
+
   public isLoggedIn(): number {
-    const storage = localStorage.getItem('pwSession4');
+    const storage = localStorage.getItem('pwSession');
     if (storage) {
-      this.user = JSON.parse(EncryptUtil.decrypt(storage));
+      try {
+        const obj = JSON.parse(EncryptUtil.decrypt(storage));
+        this.user = obj.user;
+      } catch (ex) {
+        console.log(ex);
+        return -1;
+      }
     } else {
       return -1;
     }
     if (this.user) {
        return this.user.idRole;
-    } 
+    }
     return -1;
   }
 
   public logout() {
     console.log('Destroying session, going to login');
     this.user = null;
-    localStorage.removeItem('pwSession4');
+    localStorage.removeItem('pwSession');
     this.router.navigate(['login']);
   }
 

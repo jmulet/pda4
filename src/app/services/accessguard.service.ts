@@ -11,7 +11,7 @@ export class AccessGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 
-    console.log('Trying to navigate to route ', route);
+    // console.log('Trying to navigate to route ', route);
 
     const requiresLogin = route.data.requiresLogin || false;
     const logIn = this.session.isLoggedIn();

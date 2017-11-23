@@ -33,7 +33,7 @@ export class BotoneraComponent implements OnInit, OnChanges {
     @Output() longClick = new EventEmitter<any>();
 
     @Input() set user(s) {
-        // console.logonsole.log('Botonera: setting user', s);
+        // console.log('Botonera: setting user', s);
         this.student = s;
         this.isBusy = false;
         // Set the ids to each button
@@ -50,28 +50,28 @@ export class BotoneraComponent implements OnInit, OnChanges {
     }
 
     @Input() set group(g) {
-        // console.logonsole.log('Botonera: setting group to ', g);
+        // console.log('Botonera: setting group to ', g);
         this._group = g;
     }
 
     @Input() set date(d) {
-        // console.logonsole.log('Botonera: setting date', d);
+       // console.log('Botonera: setting date', d);
         this._day = d;
     }
 
     formatter = (s: any) => s.fullname;
     ngOnInit() { }
     ngOnChanges(changes: SimpleChanges): void {
-        // console.logonsole.log('CHANGES-->', changes);
+        // console.log('CHANGES-->', changes);
     }
     handle(evt) {
         if (!this.student || !this._group ||  !this._day) {
-            // console.logonsole.log('Component wrongly initialized, data is missing');
+            // console.log('Component wrongly initialized, data is missing');
             return;
         }
-        // console.logonsole.log('the user is ', this.student);
-        // console.logonsole.log('the student badges are ', this.student.badges);
-        // console.logonsole.log('Bottonera has recieved this evt ', evt, ' and emits it for changes to list component');
+        // console.log('the user is ', this.student);
+        // console.log('the student badges are ', this.student.badges);
+        // console.log('Bottonera has recieved this evt ', evt, ' and emits it for changes to list component');
 
         this.handleShort(evt.badge.type, evt);
         if (evt.badge.isLong) {
@@ -141,7 +141,7 @@ export class BotoneraComponent implements OnInit, OnChanges {
             // console.log('Message deleted');
             this.student.chats.splice(0, 1);
         } else if ((this.message || '').trim()) {
-            this.rest.saveComment(idChat, fromUserId, toUserId, idGroup, this.message).subscribe((d: any) => {
+            this.rest.saveComment(idChat, fromUserId, toUserId, idGroup, this.message, this._day).subscribe((d: any) => {
                 if (d.ok && d.id) {
                     if (idChat) {
                         this.student.chats[0].msg = this.message;

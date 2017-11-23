@@ -1,98 +1,121 @@
 <div>
-<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+        <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
 
-<p-dialog header="Long click mode" [(visible)]="displayDlg" modal="true" width="300" [responsive]="true">
-        <button class="btn btn-danger btn-longclick" (click)="longConfirm(1)">
-                <span class="fa fa-repeat"></span> <span>Force addition/deletion</span>
-        </button>
-        <button class="btn btn-warning btn-longclick" (click)="longConfirm(2)">
-                <span class="fa fa-undo"></span> <span>Add or delete if not set</span>
-        </button>       
-        <button class="btn btn-success btn-longclick" (click)="longConfirm(0)">
-                 <span class="fa fa-close"></span> <span>Cancel</span>
-        </button>
-</p-dialog>
+        <p-dialog header="Long click mode" [(visible)]="displayDlg" modal="true" width="300" [responsive]="true">
+                <button class="btn btn-danger btn-longclick" (click)="longConfirm(1)">
+                        <span class="fa fa-repeat"></span>
+                        <span>Force addition/deletion</span>
+                </button>
+                <button class="btn btn-warning btn-longclick" (click)="longConfirm(2)">
+                        <span class="fa fa-undo"></span>
+                        <span>Add or delete if not set</span>
+                </button>
+                <button class="btn btn-success btn-longclick" (click)="longConfirm(0)">
+                        <span class="fa fa-close"></span>
+                        <span>Cancel</span>
+                </button>
+        </p-dialog>
 
-<div class="topbar-overlay">
+        <div class="topbar-overlay">
                 <h5>
                         <!--<span class="hidden-sm-down">Llista</span>-->
-                        <app-group-pick [(selection)]="selectedGroup" (changed)="update($event)" style="width:50%"></app-group-pick>
+                        <app-group-pick [(selection)]="selectedGroup" (changed)="onGroupChanged($event)" style="width:50%"></app-group-pick>
                         <span class="fa fa-search"></span>
-                        <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15"
-                        placeholder="Filtre" [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>                     
-                </h5>               
-</div>
+                        <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15" placeholder="Filtre"
+                                [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>
+                </h5>
+        </div>
 
-<div class="container-fluid" style="padding:10px; padding-top:120px; padding-bottom:310px;">
+        <div class="container-fluid" style="padding:10px; padding-top:120px; padding-bottom:310px;">
 
-        <div class="row">
-        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12" style="padding: 10px">
+                <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12" style="padding: 10px">
 
-        <div *ngIf="!isHoliday">
-               <div *ngFor="let student of studentsFiltered; let i = index">
-                                <table style="width:100%">
-                                        <tr style="border: 1px solid lightgray; padding:2px;" [ngStyle]="{'background': student.emailParents?'lightyellow':'aliceblue'}">
-                                                <td style="width: 50px">
-                                                        <a href="" (click)="onSelect(student, $event)">
-                                                                <img class="round-img  pw-thm-{{student.username}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABjAQMAAAAGvQTMAAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABJJREFUeNpjYBgFo2AUjAIyAQAEQQABBXTlEgAAAABJRU5ErkJggg=="
-                                                                        title="{{student.id}}" style="display:inline; width:45px; margin-right:10px;" /></a>  
-                                                </td>
-                                                <td>
-                                                        <a href="" (click)="onSelect(student, $event)"> 
-                                                                <span class="text-overflow: hidden;">{{i+1}}. {{formatter(student)}} </span>
-                                                        </a>
-                                                        <br/>
-                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore1}"></div>
-                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore2}"></div>
-                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore3}"></div>
-                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore4}"></div>
-                                                        <span *ngIf="student.chats.length" class="fa fa-pencil"></span>
-                                                </td>
-                                        </tr>                                        
-                                </table>
-                                             
+                                <div *ngIf="!isHoliday && areThereGroups">
+                                        <div *ngFor="let student of studentsFiltered; let i = index">
+                                                <table style="width:100%">
+                                                        <tr style="border: 1px solid lightgray; padding:2px;" [ngStyle]="{'background': student.emailParents?'lightyellow':'aliceblue'}">
+                                                                <td style="width: 50px">
+                                                                        <a href="" (click)="onSelect(student, $event)">
+                                                                                <img class="round-img  pw-thm-{{student.username}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABjAQMAAAAGvQTMAAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABJJREFUeNpjYBgFo2AUjAIyAQAEQQABBXTlEgAAAABJRU5ErkJggg=="
+                                                                                        title="{{student.id}}" style="display:inline; width:45px; margin-right:10px;"
+                                                                                />
+                                                                        </a>
+                                                                </td>
+                                                                <td>
+                                                                        <a href="" (click)="onSelect(student, $event)">
+                                                                                <span class="text-overflow: hidden;">{{i+1}}. {{formatter(student)}} </span>
+                                                                        </a>
+                                                                        <br/>
+                                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore1}"></div>
+                                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore2}"></div>
+                                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore3}"></div>
+                                                                        <div class="semaphore" [ngStyle]="{'background-color': student.semaphore4}"></div>
+                                                                        <span *ngIf="student.chats.length" class="fa fa-pencil"></span>
+                                                                </td>
+                                                        </tr>
+                                                </table>
+
+                                        </div>
+                                </div>
+
+                                <div *ngIf="!areThereGroups" class="alert alert-warning">
+                                        Cal crear grups abans d'utilitzar l'aplicació. Aneu al menu grups de
+                                        <a href="https://piworld.es"
+                                                target="_blank">https://piworld.es</a>
+                                </div>
+
+                                <div *ngIf="isHoliday">
+                                        <h4 style="background: red; color: white; font-weight: bold; text-align: center; margin: 100px">Dia no lectiu</h4>
+                                </div>
+
+                        </div>
+
+                        <div class="d-none d-xl-block d-lg-block col-xl-6 col-md-6" style="position: fixed; top: 0; bottom: 0; right: 0; padding-top: 100px;">
+                                <div *ngIf="selectedStudent && !isHoliday">
+                                        <h6 class="ui-panel-title">
+                                                <span>
+
+                                                        <img class="round-img  pw-thm-{{selectedStudent.username}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABjAQMAAAAGvQTMAAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABJJREFUeNpjYBgFo2AUjAIyAQAEQQABBXTlEgAAAABJRU5ErkJggg=="
+                                                                title="{{selectedStudent.id}}" style="display:inline; width:64px; margin-right:10px;"
+                                                        /> {{selectedStudent.fullname}}
+
+                                                </span>
+                                        </h6>
+                                        <app-list-botonera [user]="selectedStudent" [group]="selectedGroup2" [date]="daySelected" (changed)="handleClick($event)"
+                                                (longClick)="handleLongClick($event)"></app-list-botonera>
+                                </div>
+                        </div>
                 </div>
-        </div>
-
-        <div *ngIf="isHoliday">
-                <h4 style="background: red; color: white; font-weight: bold; text-align: center; margin: 100px">Dia no lectiu</h4>
-        </div>
 
         </div>
 
-        <div class="d-none d-xl-block d-lg-block col-xl-6 col-md-6" style="position: fixed; top: 0; bottom: 0; right: 0; padding-top: 100px;">
-                <div *ngIf="selectedStudent && !isHoliday">      
-                <h6 class="ui-panel-title"> <span>   
 
-                                <img class="round-img  pw-thm-{{selectedStudent.username}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABjAQMAAAAGvQTMAAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABJJREFUeNpjYBgFo2AUjAIyAQAEQQABBXTlEgAAAABJRU5ErkJggg=="
-                                title="{{selectedStudent.id}}" style="display:inline; width:64px; margin-right:10px;" />
 
-                                   {{selectedStudent.fullname}}</span></h6>
-                        <app-list-botonera [user]="selectedStudent" [group]="selectedGroup2" [date]="daySelected" (changed)="handleClick($event)" (longClick)="handleLongClick($event)"></app-list-botonera>
-                </div>  
-        </div>
+        <div *ngIf="selectedStudent && innerWidth<990" class="botonera-overlay">
+                <h6 class="ui-panel-title">
+                        <button class="fa fa-close" (click)="selectedStudent=null"></button>
+                        <span>{{selectedStudent? selectedStudent.fullname : ''}}</span>
+                </h6>
+                <app-list-botonera [user]="selectedStudent" [group]="selectedGroup2" [date]="daySelected" (changed)="handleClick($event)"
+                        (longClick)="handleLongClick($event)"></app-list-botonera>
         </div>
 
-</div>
+        <nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+                <ul class="nav">
+                        <li>
+                                <button class="btn btn-xs btn-default fa fa-chevron-left" (click)="addDay(-1)"></button>
+                                <p-calendar [(ngModel)]="dateSelected" (onSelect)="onDateChange()" [maxDate]="today" [inputStyle]="{width: '110px'}" [disabledDays]="[0,6]"
+                                        [showButtonBar]="true" [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
+                                </p-calendar>
+                                <button style="margin-left:26px; margin-right:10px" class="btn btn-xs btn-default fa fa-chevron-right" (click)="addDay(1)"></button>
+                        </li>
+                        <li>
+                                <button *ngIf="dateAlert" class="btn btn-sm btn-warning" (click)="goToday()">
+                                        <span class="fa fa-exclamation-triangle" title="Return to today"></span>
+                                </button>
+                        </li>
 
-
-
-<div *ngIf="selectedStudent && innerWidth<990" class="botonera-overlay">
-                <h6 class="ui-panel-title"><button class="fa fa-close" (click)="selectedStudent=null"></button> <span>{{selectedStudent? selectedStudent.fullname : ''}}</span></h6>
-                <app-list-botonera [user]="selectedStudent" [group]="selectedGroup2" [date]="daySelected" (changed)="handleClick($event)" (longClick)="handleLongClick($event)"></app-list-botonera>
-</div>
-
-<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">  
-        <ul class="nav">
-                <li>    
-                        <button *ngIf="dateAlert" class="btn btn-sm btn-warning" (click)="goToday()"><span class="fa fa-exclamation-triangle" title="Return to today"></span>
-                        </button>    
-                </li>   
-                <li>
-                        <p-calendar [(ngModel)]="dateSelected" (onSelect)="onDateChange()" [maxDate]="today" [inputStyle]="{width: '110px'}"
-                                [disabledDays]="[0,6]" [showButtonBar]="true" [showIcon]="true" baseZIndex="10000" dateFormat="dd/mm/yy" [locale]="locale">
-                        </p-calendar>
-                </li>
-        </ul>
-</nav>
+                </ul>
+        </nav>
 </div>

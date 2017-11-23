@@ -97,8 +97,8 @@ export class RestService implements OnInit {
         return this.http.post('/rest/chats/delete', {id: idChat});
     }
 
-    saveComment(idChat: number, idFrom: number, idTo: number, idGroup: number, msg: string) {
-        const body = { id: idChat, idUser: idFrom, isFor: idTo, idGroup: idGroup, msg: msg, parents: 1 };
+    saveComment(idChat: number, idFrom: number, idTo: number, idGroup: number, msg: string, day: Date) {
+        const body = { id: idChat, idUser: idFrom, isFor: idTo, idGroup: idGroup, msg: msg, parents: 1, when: day };
         return this.http.post('/rest/chats/save', body);
     }
 
@@ -136,5 +136,9 @@ export class RestService implements OnInit {
 
     generateXLS(wb) {
         return this.http.post('/rest/pda/activities/createxls', {workbook: wb}, { responseType: 'arraybuffer' });
+    }
+
+    listLogins(idUser: number) {
+        return this.http.post('/rest/auth/loginlist', {idUser: idUser});
     }
 }

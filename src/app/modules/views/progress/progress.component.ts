@@ -38,6 +38,10 @@ const DECIMALS = function(x, n) {
 })
 
 export class ProgressComponent implements OnInit {
+    lastStudentLogin: any;
+    lastParentsLogin: any;
+    loginsParents: any[];
+    loginsStudent: any[];
     summary: any;
     summaryText = '';
     grades: any[];
@@ -65,10 +69,8 @@ export class ProgressComponent implements OnInit {
     constructor(private session: SessionService, private rest: RestService, private growl: MessageService) { }
 
     ngOnInit() {
+        this.groupSelected = this.session.getUserGroups()[0];
         this.user = this.session.getUser();
-        if (this.user) {
-            this.groupSelected = this.user.groups[0];
-        }
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
         this.selectedDate = new Date();
@@ -86,7 +88,10 @@ export class ProgressComponent implements OnInit {
     }
 
     formatDate(date: any) {
-         if (date.day) {
+        if (typeof(date) === 'string') {
+            date = new Date(date);
+        }
+        if (date.day) {
             return date.day + '/' + (date.month + 1) + '/' + date.year;
         }
         return  date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
@@ -99,7 +104,28 @@ export class ProgressComponent implements OnInit {
             return 'NP';
        }
        return  grade;
-   }
+    }
+
+    formatLapsed(date) {
+        if (date) {
+            const now = new Date();
+            let delta = 0.001 * Math.abs(new Date().getTime() - new Date(date).getTime());
+            // calculate (and subtract) whole days
+            const days = Math.floor(delta / 86400);
+            delta -= days * 86400;
+            // calculate (and subtract) whole hours
+            const hours = Math.floor(delta / 3600) % 24;
+            delta -= hours * 3600;
+            // calculate (and subtract) whole minutes
+            const minutes = Math.floor(delta / 60) % 60;
+            delta -= minutes * 60;
+            // what's left is seconds
+            const seconds = delta % 60;  // in theory the modulus is not required
+            return days + ' dies ' + hours + ' h ' + minutes + ' min';
+        } else {
+            return 'Mai';
+        }
+    }
 
     update() {
         if (!this.groupSelected ||  !this.studentSelected || this.isLoading) {
@@ -152,7 +178,38 @@ export class ProgressComponent implements OnInit {
             this.grades = d;
         });
 
-        Promise.all([promise1, promise2, promise3]).then( (d) => {
+        const promise4 = this.rest.listLogins(idTo).toPromise();
+        promise4.then( (d: any) => {
+            this.loginsStudent = d.logins.filter( e => e.parents === 0).map( (e, i) => {
+                if (i === 0) {
+                    return {label: this.formatLapsed(e.login), value: e};
+                } else {
+                    return {label: this.formatDate(e.login), value: e};
+                }
+            });
+
+            this.loginsParents =  d.logins.filter( e => e.parents === 1).map( (e, i) => {
+                if (i === 0) {
+                    return {label: this.formatLapsed(e.login), value: e};
+                } else {
+                    return {label: this.formatDate(e.login), value: e};
+                }
+            });
+
+            console.log(this.loginsStudent);
+            console.log(this.loginsParents);
+
+            if (this.loginsStudent.length === 0) {
+               this.loginsStudent.push({label: 'Mai'});
+            }
+            if (this.loginsParents.length === 0) {
+                this.loginsParents.push({label: 'Mai'});
+            }
+            this.lastStudentLogin = this.loginsStudent[0].value;
+            this.lastParentsLogin = this.loginsParents[0].value;
+        });
+
+        Promise.all([promise1, promise2, promise3, promise4]).then( (d) => {
             this.isLoading = false;
             this.createSummary();
         } );
@@ -259,6 +316,7 @@ export class ProgressComponent implements OnInit {
         let notaDeures = 0, notaFeina = 0, notaComportament = 0;
 
         const n = badgesInDay.length;
+
         for (let i = 0; i < n; i++) {
             const b = badgesInDay[i];
             if (b.type === BADGES_TYPES.FA) {

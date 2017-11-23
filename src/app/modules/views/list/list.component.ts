@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { SessionService } from '../../../services/session.service';
+import { SessionService, USER_ROLES } from '../../../services/session.service';
 import { BadgesLogic, BADGES_TYPES } from './badge.logic';
 import { SCORES, rainbow } from './badgebutton.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -42,6 +42,7 @@ export class ListComponent implements OnInit {
     displayDlg: boolean;
     suggestions: string[];
     options = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)'];
+    areThereGroups: boolean;
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -52,10 +53,11 @@ export class ListComponent implements OnInit {
     }
 
     formatter = (s: any) => s.fullname;
- 
+
     constructor(private rest: RestService, private session: SessionService, 
         private translate: TranslateService, private growl: MessageService,
-        private confirmationService: ConfirmationService) { }
+        private confirmationService: ConfirmationService) { 
+        }
 
     ngOnInit() {
         this.innerWidth = window.innerWidth;
@@ -65,14 +67,17 @@ export class ListComponent implements OnInit {
         const du = new DateUtils(this.dateSelected);
         this.isHoliday = du.isHoliday();
         this.daySelected = du.toMysql();
-        this.selectedGroup = this.session.getUser().groups[0];
-        this.update(this.selectedGroup);
+        const validGroups = this.session.getUserGroups();
+        this.areThereGroups = validGroups.length > 0;
+        this.selectedGroup = validGroups[0];
+        this.onGroupChanged(this.selectedGroup);
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
         this.modelChanged.subscribe((txt) => {
             this.searchText = txt;
             this.applyFilter();
         });
+        this.searchText = '';
     }
 
     applyFilter() {
@@ -134,7 +139,8 @@ export class ListComponent implements OnInit {
 
     }
 
-    update(g) {
+    onGroupChanged(g) {
+
         if (g !== this.selectedGroup) {
             this.selectedGroup = g;
             this.selectedStudent = null;
@@ -143,13 +149,17 @@ export class ListComponent implements OnInit {
             this.session.addCss(g.thmcss);
         }
 
-        if (!g) {
+        this.selectedGroup = g;
+        this.searchText = '';
+        this.update();
+    }
+
+    update() {
+        if (!this.selectedGroup) {
             return;
         }
 
-        this.searchText = '';
-
-        this.rest.getStudents(g.idGroup, this.daySelected).subscribe(
+        this.rest.getStudents(this.selectedGroup.idGroup, this.daySelected).subscribe(
             (res: Array<any>) => {
                 res.forEach((s) => {
                     this.createSemaphore(s);
@@ -179,7 +189,7 @@ export class ListComponent implements OnInit {
     longConfirm(mode) {
         this.displayDlg = false;
         if (mode <= 0) {
-            return;  
+            return;
         }
 
         // This is the information of the original badge which was clicked
@@ -216,11 +226,12 @@ export class ListComponent implements OnInit {
                     const isValid = logic.testAction(type, badgeId);
                     if (isValid) {
                         if (badgeId && hasType) {
-                            logic.removeId(hasType.id);
-                            this.createSemaphore(s);
+                            logic.removeId(hasType.id).toPromise().then( (e) =>
+                            this.createSemaphore(s)
+                        );
                         } else if (!badgeId && !hasType) {
                             const score = SCORES[type] || 0;
-                                logic.createBadge(s.id, this.daySelected, type, score, this.selectedGroup.idGroup).subscribe((e) =>
+                                logic.createBadge(s.id, this.daySelected, type, score, this.selectedGroup.idGroup).toPromise().then((e) =>
                                     this.createSemaphore(s)
                                 );
                         }
@@ -245,7 +256,7 @@ export class ListComponent implements OnInit {
         } else {
             this.dateAlert = false;
         }
-        this.update(this.selectedGroup);
+        this.update();
     }
 
     goToday() {
@@ -260,5 +271,14 @@ export class ListComponent implements OnInit {
 
     changed(text: string) {
         this.modelChanged.next(text);
+    }
+
+    addDay(num: number) {
+        const ms = this.dateSelected.getTime() + num * 86400000;
+        if (ms > this.today.getTime()) {
+            return;
+        }
+        this.dateSelected = new Date(ms);
+        this.onDateChange();
     }
 }

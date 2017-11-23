@@ -14,6 +14,19 @@ interface LoginSignature {
     user_info: string;
 }
 
+const _storage: any = {};
+const storage = localStorage || {
+    getItem: function(key) {
+        return _storage[key];
+    },
+    setItem: function(key, item) {
+        _storage[key] = item;
+    },
+    removeItem: function(key) {
+        _storage[key] = null;
+    }
+};
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -33,7 +46,7 @@ export class LoginComponent implements OnInit {
     langFlag: string;
     loading = false;
     showAlert = false;
-
+   
     constructor(private router: Router, private auth: AuthService,
         private session: SessionService, private translate: TranslateService,
         private messageService: MessageService, private deviceInfo: Ng2DeviceService) {
@@ -66,7 +79,7 @@ export class LoginComponent implements OnInit {
             this.langFlag = 'assets/img/' + lang + '.png';
         } );
 
-        const pwMobile = localStorage.getItem('pwMobile');
+        const pwMobile = storage.getItem('pwMobile');
         if (this.isMobile && pwMobile) {
                 try {
                     const obj = JSON.parse(EncryptUtil.decrypt(pwMobile));
@@ -81,6 +94,7 @@ export class LoginComponent implements OnInit {
 
 
     doLogin(event?) {
+
         if (event &&  event.keyCode !== 13) {
             return;
         }
@@ -90,12 +104,15 @@ export class LoginComponent implements OnInit {
              this.loading = false;
              if (res.ok) {
                 const user = JSON.parse( EncryptUtil.decrypt(res.user_info) );
+               
+
                 if (user.idRole < USER_ROLES.student) {
                     if (this.credentials.username !== 'root' && this.isMobile) {
                         // Desa els parametres dins del navegador
-                        localStorage.setItem('pwMobile', EncryptUtil.encrypt(JSON.stringify(this.credentials)));
+                        storage.setItem('pwMobile', EncryptUtil.encrypt(JSON.stringify(this.credentials)));
                      }
-                    this.session.setUser(user, res.user_info);
+                    this.session.setUser(user);
+
                     this.messageService.add({ severity: 'info', summary: 'Benvingut', detail: user.fullname });
                     this.router.navigate(['home']);
                 } else {
@@ -129,7 +146,7 @@ export class LoginComponent implements OnInit {
         this.credentials.password = '';
         this.showAlert = false;
         this.error = null;
-        localStorage.removeItem('pwMobile');
+        storage.removeItem('pwMobile');
     }
 
     thisUserAgent($event) {

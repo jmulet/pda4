@@ -103,9 +103,10 @@ export class ActivitiesComponent implements OnInit {
             this.frozenWidth = 100 + 'px';
         }
 
-        const user = this.session.getUser();
-        if (user.groups.length) {
-            this.selectedGroup = user.groups[0];
+        const userGroups = this.session.getUserGroups();
+
+        if (userGroups.length) {
+            this.selectedGroup = userGroups[0];
         }
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe((ev) => this.session.createCalendarLocale());

@@ -3,7 +3,7 @@ import { Component, OnInit, OnChanges, Input, SimpleChanges, Output, EventEmitte
 import { SessionService } from '../../../services/session.service';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../services/rest.service';
- 
+import { SelectItem } from 'primeng/components/common/selectitem';
 
 @Component({
     selector: 'app-student-pick',
@@ -15,16 +15,22 @@ export class StudentPickComponent implements OnInit, OnChanges {
     @Input() group: any;
     @Input() selection: any;
     @Output() changed = new EventEmitter<any>();
-    students: any;
+    students: SelectItem[];
+
     constructor(private rest: RestService, private session: SessionService, private http: HttpClient) { }
 
     loadStudents() {
         if (this.group) {
+
             this.rest.listStudents(this.group.idGroup).subscribe(
-                (res) => {
-                    this.students = res;
+                (res: any[]) => {
+                    this.students = new Array(res.length);
+                    res.forEach( (e, i) => {
+                        this.students[i] = {label: e.fullname, value: e};
+                    });
+ 
                     if (this.students.length) {
-                        this.selection = this.students[0];
+                        this.selection = this.students[0].value;
                         this.changed.emit(this.selection);
                     }
                 }
@@ -42,19 +48,17 @@ export class StudentPickComponent implements OnInit, OnChanges {
         if (changes.group) {
             this.loadStudents();
         } else if (changes.selection) {
-            const filtered = (this.students || []).filter( (s) => s.id === this.selection.id );
+            const filtered = (this.students || []).filter( (s) => s.value.id === this.selection.id );
             if (filtered.length) {
-                this.selection = filtered[0];
+                this.selection = filtered[0].value;
             }
         }
     }
 
-    onSelect(s) {
-        this.selection = s;
-        this.changed.emit(s);
+    onSelect(evt) {
+        this.selection = evt.value;
+        this.changed.emit(this.selection);
     }
 
-    blur() {
-        setTimeout( () => this.dropdownShown = false, 250);
-    }
+
 }

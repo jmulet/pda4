@@ -1,6 +1,6 @@
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SessionService } from '../../../services/session.service';
+import { SessionService, USER_ROLES } from '../../../services/session.service';
 
 @Component({
     selector: 'app-group-pick',
@@ -11,16 +11,20 @@ export class GroupPickComponent implements OnInit {
     dropdownShown = false;
     selected: any;
     groups: any;
+    ALLOWED_GROUP_ROLES = [USER_ROLES.admin, USER_ROLES.teacher, USER_ROLES.teacheradmin];
+
+
     @Output() changed = new EventEmitter<any>();
     constructor(private session: SessionService) { }
 
     ngOnInit() {
-        const user = this.session.getUser();
-        if (user) {
-            this.groups = user.groups;
-            if (!this.selected) {
+
+        this.groups = this.session.getUserGroups();
+        if (!this.selected && this.groups.length) {
                 this.selected = this.groups[0];
-            }
+                if (this.selected.thmcss) {
+                    this.session.addCss(this.selected.thmcss);
+                }
         }
     }
 
@@ -37,6 +41,9 @@ export class GroupPickComponent implements OnInit {
 
     onSelection(g) {
         this.selected = g;
+        if (g.thmcss) {
+            this.session.addCss(g.thmcss);
+        }
         this.changed.emit(g);
     }
 

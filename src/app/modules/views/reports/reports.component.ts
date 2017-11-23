@@ -41,7 +41,7 @@ export class ReportsComponent implements OnInit {
         this.fromDate.setDate(this.fromDate.getDate() - this.fromDate.getDay() + 1);
         this.toDate.setDate(this.toDate.getDate() - this.toDate.getDay() + 5);
 
-        this.selectedGroup = this.session.getUser().groups[0];
+        this.selectedGroup = this.session.getUserGroups()[0];
         this.onGrpChange(this.selectedGroup);
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );

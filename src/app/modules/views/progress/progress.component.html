@@ -5,11 +5,17 @@
                 </button>
         </h5>
 
+
+
         <app-group-pick [selection]="groupSelected" (changed)="onGroupSelected($event)"></app-group-pick>
         <app-student-pick [group]="groupSelected" [selection]="studentSelected" (changed)="onStudentSelected($event)"></app-student-pick>
 
         <br/>
         <br/>
+
+        <h5> Logins</h5>
+        Estudiant: <p-dropdown [options]="loginsStudent" [(ngModel)]="lastStudentLogin" [style]="{width: '160px'}"></p-dropdown>
+        Pares: <p-dropdown [options]="loginsParents" [(ngModel)]="lastParentsLogin" [style]="{width: '160px'}"></p-dropdown>
 
         <div *ngIf="studentSelected">
                 <h5>Incidències
