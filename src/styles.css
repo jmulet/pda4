@@ -13,7 +13,14 @@
 .ui-confirmdialog {z-index: 10001 !important;}
 .ui-datatable-scrollable-footer {overflow: auto !important;}
 
-.pcalendar-fullwidth .ui-datepicker-inline {
+/* Allow dropdowns in table header cells */
+.ui-datatable-scrollable-header {overflow: inherit !important};
+th.ui-state-default.ui-unselectable-text {overflow: inherit !important};
+ 
+.pcalendar-fullwidth {
+    width: 100px;
+}
+.ui-datepicker.ui-datepicker-inline {
     width: 100% !important;
 }
 

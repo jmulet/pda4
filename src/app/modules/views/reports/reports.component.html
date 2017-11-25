@@ -20,10 +20,10 @@
         <p *ngIf="opts.tipusInforme==1">
                 <b>Alumnes: </b>
                 <p-pickList [(source)]="students" [target]="studentsSelected" sourceHeader="Disponible" targetHeader="Seleccionat" [responsive]="true"
-                        filterBy="fullname" dragdrop="true" dragdropScope="students" sourceFilterPlaceholder="Cerca per nom" targetFilterPlaceholder="Cerca per nom"
-                        [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}">
+                        filterBy="fullname" dragdrop="true" dragdropScope="students" sourceFilterPlaceholder="Cerca" targetFilterPlaceholder="Cerca"
+                        [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}" [showSourceControls]="false" [showTargetControls]="false">
                         <ng-template let-student pTemplate="item">
-                                <span>{{student.fullname}}</span>
+                                <span style="max-width:250px">{{student.fullname}}</span>
                         </ng-template>
                 </p-pickList>
         </p>

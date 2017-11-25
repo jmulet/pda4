@@ -10,7 +10,10 @@ import { DialogModule } from 'primeng/components/dialog/dialog';
 import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdialog';
 import { ConfirmationService } from 'primeng/components/common/confirmationservice';
 import { CalendarModule } from 'primeng/components/calendar/calendar';
-import { TabMenuModule} from 'primeng/components/tabmenu/tabmenu';
+import { TabMenuModule } from 'primeng/components/tabmenu/tabmenu';
+import { PickListModule } from 'primeng/components/picklist/picklist';
+import { DropdownModule } from 'primeng/components/dropdown/dropdown';
+import { SplitButtonModule } from 'primeng/components/splitbutton/splitbutton';
 
 const routes: Routes = [
   { path: '', component: ActivitiesComponent },
@@ -26,6 +29,9 @@ const routes: Routes = [
     ConfirmDialogModule,
     CalendarModule,
     TabMenuModule,
+    PickListModule,
+    DropdownModule,
+    SplitButtonModule,
     RouterModule.forChild(routes)
   ],
   exports: [RouterModule],

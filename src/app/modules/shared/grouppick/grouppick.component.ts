@@ -20,11 +20,20 @@ export class GroupPickComponent implements OnInit {
     ngOnInit() {
 
         this.groups = this.session.getUserGroups();
-        if (!this.selected && this.groups.length) {
+
+        if (!this.selected) {
+            const selIdGroup = this.session.getSelectedGroup().idGroup;
+            if (selIdGroup) {
+                const filtered = (this.groups || []).filter((g) => g.idGroup === selIdGroup);
+                if (filtered[0] ) {
+                    this.selected = filtered[0];
+                }
+            } else if (this.groups.length) {
                 this.selected = this.groups[0];
                 if (this.selected.thmcss) {
                     this.session.addCss(this.selected.thmcss);
                 }
+            }
         }
     }
 
@@ -41,6 +50,7 @@ export class GroupPickComponent implements OnInit {
 
     onSelection(g) {
         this.selected = g;
+        this.session.setSelectedGroup(g);
         if (g.thmcss) {
             this.session.addCss(g.thmcss);
         }

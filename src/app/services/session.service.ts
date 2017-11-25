@@ -48,7 +48,7 @@ export class SessionService {
       user: user,
       css: []
     };
-    const userEncryped = EncryptUtil.encrypt( JSON.stringify(obj));
+    const userEncryped = EncryptUtil.encrypt(JSON.stringify(obj));
     localStorage.setItem('pwSession', userEncryped);
   }
 
@@ -59,7 +59,7 @@ export class SessionService {
   public getUserGroups(): any[] {
     const user = this.getUser();
     if (user && user.groups) {
-      return user.groups.filter( (g) => this.ALLOWED_GROUP_ROLES.indexOf(g.eidRole) >= 0 && (g.groupYear + 2000) === this.currentYear );
+      return user.groups.filter((g) => this.ALLOWED_GROUP_ROLES.indexOf(g.eidRole) >= 0 && (g.groupYear + 2000) === this.currentYear);
     } else {
       return [];
     }
@@ -79,7 +79,7 @@ export class SessionService {
       return -1;
     }
     if (this.user) {
-       return this.user.idRole;
+      return this.user.idRole;
     }
     return -1;
   }
@@ -91,7 +91,7 @@ export class SessionService {
     this.router.navigate(['login']);
   }
 
-  public setLang(lang)  {
+  public setLang(lang) {
     this.lang = lang;
     this.langChanged$.emit(lang);
   }
@@ -101,7 +101,11 @@ export class SessionService {
   }
 
   public getSelectedGroup(): any {
-    return this.selectedGroup ||  {};
+    return this.selectedGroup || {};
+  }
+
+  public setSelectedGroup(g: any): void {
+    this.selectedGroup = g;
   }
 
   public addCss(styleSheet: string): void {
@@ -112,46 +116,67 @@ export class SessionService {
   }
 
 
-  createCalendarLocale() {
+  public createCalendarLocale() {
     let locale;
     if (this.lang === 'es') {
       locale = {
-            firstDayOfWeek: 1,
-            dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
-            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
-            monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
-            'septiembre', 'octubre', 'noviembre', 'diciembre'],
-            monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
-            today: 'Hoy',
-            clear: 'Borrar'
-        };
+        firstDayOfWeek: 1,
+        dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+        dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+        monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
+          'septiembre', 'octubre', 'noviembre', 'diciembre'],
+        monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+        today: 'Hoy',
+        clear: 'Borrar'
+      };
     } else if (this.lang === 'ca') {
       locale = {
-          firstDayOfWeek: 1,
-          dayNames: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte'],
-          dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-          dayNamesMin: ['Dm', 'Dl', 'Dm', 'Dx', 'Dj', 'Dv', 'Ds'],
-          monthNames: ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost',
+        firstDayOfWeek: 1,
+        dayNames: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte'],
+        dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+        dayNamesMin: ['Dm', 'Dl', 'Dm', 'Dx', 'Dj', 'Dv', 'Ds'],
+        monthNames: ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost',
           'setembre', 'octubre', 'novembre', 'desembre'],
-          monthNamesShort: ['gen', 'feb', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'des'],
-          today: 'Avui',
-          clear: 'Esborrar'
+        monthNamesShort: ['gen', 'feb', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'des'],
+        today: 'Avui',
+        clear: 'Esborrar'
       };
-  } else {
-    locale = {
-      firstDayOfWeek: 0,
-      dayNames: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-      dayNamesShort: ['Su', 'Mo', 'Tu', 'Wd', 'Th', 'Fr', 'Sa'],
-      dayNamesMin: ['Su', 'Mo', 'Tu', 'Wd', 'Th', 'Fr', 'Sa'],
-      monthNames: ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'agust',
-      'september', 'october', 'november', 'december'],
-      monthNamesShort: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'agu', 'sep', 'oct', 'nov', 'dec'],
-      today: 'Today',
-      clear: 'Delete'
-    };
+    } else {
+      locale = {
+        firstDayOfWeek: 0,
+        dayNames: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+        dayNamesShort: ['Su', 'Mo', 'Tu', 'Wd', 'Th', 'Fr', 'Sa'],
+        dayNamesMin: ['Su', 'Mo', 'Tu', 'Wd', 'Th', 'Fr', 'Sa'],
+        monthNames: ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'agust',
+          'september', 'october', 'november', 'december'],
+        monthNamesShort: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'agu', 'sep', 'oct', 'nov', 'dec'],
+        today: 'Today',
+        clear: 'Delete'
+      };
+    }
+    return locale;
   }
-  return locale;
-}
+
+
+  public copyToClipboard(text: string) {
+
+     if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+      const textarea = document.createElement('textarea');
+      textarea.textContent = text;
+      textarea.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        return document.execCommand('copy'); // Security exception may be thrown by some browsers.
+      } catch (ex) {
+        console.warn('Copy to clipboard failed.', ex);
+        return false;
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+    return true;
+  }
 
 }

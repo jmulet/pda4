@@ -139,7 +139,7 @@ export class ProgressComponent implements OnInit {
         const fromDate = this.session.currentYear + '-09-01';
         const toDate = (this.session.currentYear + 1) + '-06-31';
 
-        const promise1 = this.rest.listComments(idFrom, idTo, idGroup).toPromise();
+        const promise1 = this.rest.listComments(idFrom, idTo, idGroup, null, 1).toPromise();
         promise1.then( (d: any[]) => {
             this.messages = d;
             d.forEach( (m) => {
@@ -354,6 +354,8 @@ export class ProgressComponent implements OnInit {
     }
 
     onClipboardCopy() {
-        this.growl.add({ severity: 'success', summary: 'Clipboard', detail: 'S\'ha copiat la informació al porta-retalls' });
+        if (this.session.copyToClipboard(this.summaryText) ) {
+            this.growl.add({ severity: 'success', summary: 'Clipboard', detail: 'S\'ha copiat la informació al porta-retalls' });
+        }
     }
 }

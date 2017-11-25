@@ -1,6 +1,4 @@
 
-import { ClipboardModule } from 'ngx-clipboard';
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProgressComponent } from './progress.component';
@@ -16,6 +14,8 @@ import { OverlayPanelModule } from 'primeng/components/overlaypanel/overlaypanel
 import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { DataTableModule } from 'primeng/components/datatable/datatable';
 
+// Clipboard module yields to errors
+// import {  ClipboardModule } from 'ngx-clipboard';
 
 const routes: Routes = [
   { path: '', component: ProgressComponent },
@@ -23,7 +23,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    ClipboardModule,
     CommonModule,
     FormsModule,
     SharedModule,

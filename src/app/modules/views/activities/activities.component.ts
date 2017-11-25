@@ -30,19 +30,20 @@ function toColumnName(num: number) {
     templateUrl: 'activities.component.html',
     styles: [`
     .topbar-overlay {
-        position:fixed; 
-        left:0; 
-        top:57px; 
-        width:100%; 
-        height:40px; 
-        max-height:40px; 
-        background: white; 
+        position:fixed;
+        left:0;
+        top:57px;
+        width:100%;
+        height:40px;
+        max-height:40px;
+        background: white;
         z-index: 1000;
     }
     `]
 })
 
 export class ActivitiesComponent implements OnInit {
+    activityMenuItems: MenuItem[];
     columnsFiltered: any[];
     menuItems: MenuItem[];
     frozenWidth: string;
@@ -59,6 +60,30 @@ export class ActivitiesComponent implements OnInit {
     searchText = '';
     locale: any;
     activeTrimestre = 1;
+
+    // Assignments stuff
+    asgn = {
+        displayAssignDlg: false,
+        allStudents: [],
+        selected: [],
+        initialGrades: [
+            {label: 'Pendent', value: -1},
+            {label: 'No presentat', value: -2},
+            {label: '0', value: 0},
+            {label: '1', value: 1},
+            {label: '2', value: 2},
+            {label: '3', value: 3},
+            {label: '4', value: 4},
+            {label: '5', value: 5},
+            {label: '6', value: 6},
+            {label: '7', value: 7},
+            {label: '8', value: 8},
+            {label: '9', value: 9},
+            {label: '10', value: 10},
+        ],
+        initialGrade: -1,
+        override: false
+    };
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -78,7 +103,7 @@ export class ActivitiesComponent implements OnInit {
         text$.debounceTime(200)
             .distinctUntilChanged()
             .map(term => term === '' ? []
-                : searchOptions.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+                : searchOptions.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
 
     constructor(private rest: RestService, private session: SessionService,
         private confirmationService: ConfirmationService, private growl: MessageService,
@@ -91,6 +116,13 @@ export class ActivitiesComponent implements OnInit {
             {label: '2a', icon: 'fa-book', command: ($event) => { self.activeTrimestre = 2; self.update(this.selectedGroup);  }},
             {label: 'Ord.', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 3; self.update(this.selectedGroup); }},
             {label: 'Extr.', icon: 'fa-book', command: ($event) =>  { self.activeTrimestre = 4; self.update(this.selectedGroup); }}
+        ];
+
+        this.activityMenuItems = [
+            {label: 'Assigna', icon: 'fa-list', command: ($event) => {
+                console.log($event);
+            }},
+            {label: 'Esborra', icon: 'fa-trash', command: () => {} }
         ];
 
         this.scrollHeight = (window.innerHeight - 300) + 'px';
@@ -154,6 +186,10 @@ export class ActivitiesComponent implements OnInit {
         this.rest.getStudents(this.selectedGroup.idGroup, fromDate, toDate).toPromise().then((data: any[]) => {
             this.script.setProperty('_badges',  data);
 
+            if (!this.asgn.allStudents.length) {
+                this.asgn.allStudents = data;
+            }
+
             // Get the total number of sessions within this period
             const sessionDays = [];
             const homeworkSessionDays = [];
@@ -203,7 +239,10 @@ export class ActivitiesComponent implements OnInit {
         });
     }
 
-    deleteActivity(act) {
+    deleteActivity(act, evt?: any) {
+        if ( evt ) {
+            evt.preventDefault();
+        }
         this.confirmationService.confirm({
             message: 'Segur que voleu esborrar ' + act.desc + '?',
             accept: () => {
@@ -333,7 +372,10 @@ export class ActivitiesComponent implements OnInit {
         this.editActivity(beanActivity);
     }
 
-    editActivity(bean) {
+    editActivity(bean, evt?: any) {
+        if ( evt ) {
+            evt.preventDefault();
+        }
         if (typeof (bean.dia) === 'string') {
             bean.dia = new Date(bean.dia);
         }
@@ -364,7 +406,15 @@ export class ActivitiesComponent implements OnInit {
 
         this.rest.saveActivity(sB).toPromise().then((d: any) => {
             if (d.ok) {
-                this.update(this.selectedGroup);
+
+                if (!sB.id) {
+                     // New activity show assignments menu
+                     this.beanActivity.id = d.id;
+                     this.mostraAssignacions(this.beanActivity);
+
+                } else {
+                    this.update(this.selectedGroup);
+                }
             }
         });
 
@@ -379,6 +429,8 @@ export class ActivitiesComponent implements OnInit {
         const toBeSavedPointers = [];
         const toBeDeletedPointers = [];
 
+        const shownErrors = [];
+
         this.columns.forEach((c) => {
             if (c.formula && c.formula.trim()) {
 
@@ -391,7 +443,14 @@ export class ActivitiesComponent implements OnInit {
 
                         this.script.setProperty('$result',  null);
                         this.script.setProperty('_idUser', r.user.id);
-                        this.script.runInContext('$result=' + c.formula.toUpperCase());
+                        try {
+                            this.script.runInContext('$result=' + c.formula.toUpperCase());
+                        } catch (Ex) {
+                            if (shownErrors.indexOf(Ex + '') < 0) {
+                                this.growl.add({severity: 'error', summary: 'Formula!', detail: Ex });
+                                shownErrors.push(Ex + '');
+                            }
+                        }
 
                         // Update the computed value
                         const nota = r[c.field];
@@ -456,11 +515,11 @@ export class ActivitiesComponent implements OnInit {
         const maxCol = toColumnName(2 + this.columns.length );
 
         const cf = [
-            'C3:C' + maxRow, {                           // apply ws formatting ref 'A1:A10' 
-            type: 'expression',                          // the conditional formatting type 
-            priority: 1,                                 // rule priority order (required) 
-            formula: 'NOT(ISERROR(SEARCH("5", C3)))',   // formula that returns nonzero or 0 
-            style: 'redGrade'                            // a style object containing styles to apply 
+            'C3:C' + maxRow, {                           // apply ws formatting ref 'A1:A10'
+            type: 'expression',                          // the conditional formatting type
+            priority: 1,                                 // rule priority order (required)
+            formula: 'NOT(ISERROR(SEARCH("5", C3)))',   // formula that returns nonzero or 0
+            style: 'redGrade'                            // a style object containing styles to apply
             }
         ];
 
@@ -601,5 +660,72 @@ export class ActivitiesComponent implements OnInit {
             link.click();
             window.URL.revokeObjectURL(link.href);
         }
+    }
+
+    mostraAssignacions(bean: any, evt?: any) {
+        if (evt) {
+            evt.preventDefault();
+        }
+
+        this.displayEditDlg = false;
+        this.asgn.displayAssignDlg = true;
+        // Update the selection list
+        this.asgn.override = false;
+        this.asgn.selected = [];
+        if (this.beanActivity.id) {
+            // Read from table
+            this.rows.forEach( r => {
+                const nota = r[this.beanActivity.id + ''];
+                if (nota != null && nota.grade != null && nota.grade !== '') {
+                    this.asgn.selected.push({id: r.user.id, fullname: r.user.fullname});
+                }
+            });
+        }
+    }
+
+    cancelAssignments() {
+        this.asgn.displayAssignDlg = false;
+        // this.update(this.selectedGroup);
+    }
+
+    saveAssignments() {
+        this.asgn.displayAssignDlg = false;
+
+        const defaultGrade = this.asgn.initialGrade;
+
+        let toBeSaved = this.asgn.selected.map( (s) => {
+            return {idActivity: this.beanActivity.id, idUser: s.id, grade: defaultGrade};
+        });
+
+        // Si no hi ha override elimina aquells que tinguin nota ja posada
+
+        if (!this.asgn.override) {
+            toBeSaved = toBeSaved.filter( (e) => {
+                 // Read from table
+                 const row = this.rows.filter( r => e.idUser === r.user.id);
+                 if (row.length) {
+                    const nota = row[0][this.beanActivity.id + ''];
+                    return nota == null || nota.grade == null || nota.grade === '';
+                 } else {
+                     return true;
+                 }
+            });
+        }
+
+
+        if (toBeSaved.length) {
+            this.rest.saveGrades(toBeSaved).toPromise().then( (ds: [any]) => {
+                this.update(this.selectedGroup);
+            });
+        } else {
+            this.update(this.selectedGroup);
+        }
+    }
+
+
+    hideDropdown(c) {
+        window.setTimeout(function() {
+            c.dropdownShown = false;
+        }, 300);
     }
 }

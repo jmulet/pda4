@@ -21,11 +21,12 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ListComponent implements OnInit {
     isBusy: boolean;
+    showGroupXat = false;
     innerWidth: number;
     longEvent: any;
     dateAlert: boolean;
     isHoliday: boolean;
-    today: Date; 
+    today: Date;
 
     selectedGroup2: any;
     isExpanded: boolean;
@@ -43,6 +44,8 @@ export class ListComponent implements OnInit {
     suggestions: string[];
     options = ['A)', 'B)', 'C)', 'D)', 'E)', 'F)'];
     areThereGroups: boolean;
+
+    xatGroup: any;
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -158,8 +161,10 @@ export class ListComponent implements OnInit {
         if (!this.selectedGroup) {
             return;
         }
+        this.isBusy = true;
 
-        this.rest.getStudents(this.selectedGroup.idGroup, this.daySelected).subscribe(
+        const promise1 = this.rest.getStudents(this.selectedGroup.idGroup, this.daySelected).toPromise();
+        promise1.then(
             (res: Array<any>) => {
                 res.forEach((s) => {
                     this.createSemaphore(s);
@@ -172,11 +177,37 @@ export class ListComponent implements OnInit {
                 }
             }
         );
+
+        // These are group xat visible for anyone in this group
+        const promise2 = this.rest.listComments(this.session.getUser().id, 0,
+                this.selectedGroup.idGroup, this.daySelected).toPromise();
+        promise2.then( (res: any[]) => {
+            if (res.length) {
+                this.xatGroup = res[0];
+            } else {
+                this.xatGroup = {};
+            }
+        });
+
+        Promise.all([promise1, promise2]).then( e => this.isBusy = false);
+    }
+
+    // (idChat: number, idFrom: number, idTo: number, idGroup: number, msg: string, day: Date)
+
+    saveXatGroup() {
+        console.log(this.xatGroup);
+        if (this.xatGroup && this.xatGroup.msg && this.xatGroup.msg.trim() !== '') {
+            this.rest.saveComment(this.xatGroup.id || 0, this.session.getUser().id, 0, this.selectedGroup.idGroup,
+                    this.xatGroup.msg, this.daySelected).toPromise().then( (res: any) => this.xatGroup.id = res.id );
+        } else if (this.xatGroup.id) {
+            this.rest.deleteComment(this.xatGroup.id).toPromise().then( (res: any) => this.xatGroup.id = 0 );
+        }
     }
 
     onSelect(s, event) {
         event.preventDefault();
         this.selectedStudent = s;
+        this.createSemaphore(s);
         this.selectedGroup2 = { idGroup: this.selectedGroup.idGroup };
         // console.log('Sending to botonera', this.selectedStudent, this.selectedGroup2);
     }

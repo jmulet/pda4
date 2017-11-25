@@ -51,6 +51,7 @@ runInContext(code) {
         res = this.wEval.call(this.win, code);
     } catch (Ex) {
         console.log(':-( ', Ex, code);
+        throw(Ex);
     }
     const winKeys = Object.keys(this.win);
 

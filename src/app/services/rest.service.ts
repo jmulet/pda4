@@ -97,13 +97,15 @@ export class RestService implements OnInit {
         return this.http.post('/rest/chats/delete', {id: idChat});
     }
 
-    saveComment(idChat: number, idFrom: number, idTo: number, idGroup: number, msg: string, day: Date) {
+    saveComment(idChat: number, idFrom: number, idTo: number, idGroup: number, msg: string, day: string) {
         const body = { id: idChat, idUser: idFrom, isFor: idTo, idGroup: idGroup, msg: msg, parents: 1, when: day };
         return this.http.post('/rest/chats/save', body);
     }
 
-    listComments(idFrom: number, idTo: number, idGroup: number) {
-        const body = { idUser: idFrom, isFor: idTo, idGroup: idGroup, parents: 1 };
+    // shared group xats are idTo = 0
+    // if xatGroup is present, then searches id = idTo || 0, that is to say lists private and group messages
+    listComments(idFrom: number, idTo: number, idGroup: number, day?: string, xatGroup?: number) {
+        const body = { idUser: idFrom, isFor: idTo, idGroup: idGroup, parents: 1, when: day, xatGroup: xatGroup };
         return this.http.post('/rest/chats/list', body);
     }
 

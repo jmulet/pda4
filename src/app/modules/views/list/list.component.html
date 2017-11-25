@@ -20,15 +20,18 @@
                 <h5>
                         <!--<span class="hidden-sm-down">Llista</span>-->
                         <app-group-pick [(selection)]="selectedGroup" (changed)="onGroupChanged($event)" style="width:50%"></app-group-pick>
-                        <span class="fa fa-search"></span>
-                        <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15" placeholder="Filtre"
+                        <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15" placeholder="Cerca"
                                 [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>
+                        <button *ngIf="innerWidth<990" class="btn btn-xs btn-default fa" [ngClass]="showGroupXat?'fa-caret-square-o-up':'fa-caret-square-o-down'" (click)="showGroupXat=!showGroupXat"></button>
                 </h5>
         </div>
 
-        <div class="container-fluid" style="padding:10px; padding-top:120px; padding-bottom:310px;">
+        <div class="container-fluid" style="padding:5px; padding-top:110px; padding-bottom:310px;">
+                
+                <p *ngIf="showGroupXat && !isHoliday && areThereGroups && xatGroup && innerWidth<990"> <b>Missatge de grup:</b> <input style="width:95%" class="form-control-static" type="text" [(ngModel)]="xatGroup.msg" (blur)="saveXatGroup()"/></p>
 
                 <div class="row">
+                        
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12" style="padding: 10px">
 
                                 <div *ngIf="!isHoliday && areThereGroups">
@@ -85,14 +88,22 @@
                                         <app-list-botonera [user]="selectedStudent" [group]="selectedGroup2" [date]="daySelected" (changed)="handleClick($event)"
                                                 (longClick)="handleLongClick($event)"></app-list-botonera>
                                 </div>
+
+                                    
+                                <p *ngIf="!isHoliday && areThereGroups && xatGroup && innerWidth>=990"> <b>Missatge de grup: </b>
+                                        <textarea style="width:90%" class="form-control-static" rows="4" [(ngModel)]="xatGroup.msg"
+                                         (blur)="saveXatGroup()"></textarea></p>
+                        
                         </div>
+
+                     
                 </div>
 
         </div>
 
 
 
-        <div *ngIf="selectedStudent && innerWidth<990" class="botonera-overlay">
+        <div *ngIf="!isHoliday && selectedStudent && innerWidth<990" class="botonera-overlay">
                 <h6 class="ui-panel-title">
                         <button class="fa fa-close" (click)="selectedStudent=null"></button>
                         <span>{{selectedStudent? selectedStudent.fullname : ''}}</span>
