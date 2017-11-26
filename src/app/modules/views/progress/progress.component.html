@@ -7,8 +7,8 @@
 
 
 
-        <app-group-pick [selection]="groupSelected" (changed)="onGroupSelected($event)"></app-group-pick>
-        <app-student-pick [group]="groupSelected" [selection]="studentSelected" (changed)="onStudentSelected($event)"></app-student-pick>
+        <app-group-pick (changed)="onGroupSelected($event)" [disabled]="isLoading"></app-group-pick>
+        <app-student-pick [group]="groupSelected" (changed)="onStudentSelected($event)" ></app-student-pick>
 
         <br/>
         <br/>
@@ -42,7 +42,7 @@
                         </div>
                 </p-overlayPanel>
 
-                <p-calendar class="pcalendar-fullwidth" [(ngModel)]="selectedDate" [inline]="true" dateFormat="dd/mm/yy" [locale]="locale"
+                <p-calendar *ngIf="showCalendar" class="pcalendar-fullwidth" [(ngModel)]="selectedDate" [inline]="true" dateFormat="dd/mm/yy" [locale]="locale"
                         [disabledDays]="[0,6]" [disabledDates]="holidays" (onMonthChange)="op.hide()">
                         <ng-template pTemplate="date" let-date>
                                 <div (click)="onDateClick($event, date, op)" [ngSwitch]="badgesType">

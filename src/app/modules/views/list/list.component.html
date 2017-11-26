@@ -19,7 +19,7 @@
         <div class="topbar-overlay">
                 <h5>
                         <!--<span class="hidden-sm-down">Llista</span>-->
-                        <app-group-pick [(selection)]="selectedGroup" (changed)="onGroupChanged($event)" style="width:50%"></app-group-pick>
+                        <app-group-pick (changed)="onGroupChanged($event)" style="width:50%" [disabled]="false"></app-group-pick>
                         <p-autoComplete [(ngModel)]="searchText" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15" placeholder="Cerca"
                                 [minLength]="1" (ngModelChange)='changed($event)'></p-autoComplete>
                         <button *ngIf="innerWidth<990" class="btn btn-xs btn-default fa" [ngClass]="showGroupXat?'fa-caret-square-o-up':'fa-caret-square-o-down'" (click)="showGroupXat=!showGroupXat"></button>
@@ -112,7 +112,7 @@
                         (longClick)="handleLongClick($event)"></app-list-botonera>
         </div>
 
-        <nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar fixed-bottom navbar-expand-lg" [ngClass]="dateAlert?'bg-warning':'navbar-dark bg-dark'">
                 <ul class="nav">
                         <li>
                                 <button class="btn btn-xs btn-default fa fa-chevron-left" (click)="addDay(-1)"></button>
@@ -122,7 +122,7 @@
                                 <button style="margin-left:26px; margin-right:10px" class="btn btn-xs btn-default fa fa-chevron-right" (click)="addDay(1)"></button>
                         </li>
                         <li>
-                                <button *ngIf="dateAlert" class="btn btn-sm btn-warning" (click)="goToday()">
+                                <button *ngIf="dateAlert" class="btn btn-sm btn-danger" (click)="goToday()">
                                         <span class="fa fa-exclamation-triangle" title="Return to today"></span>
                                 </button>
                         </li>

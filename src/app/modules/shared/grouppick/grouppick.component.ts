@@ -11,6 +11,7 @@ export class GroupPickComponent implements OnInit {
     dropdownShown = false;
     selected: any;
     groups: any;
+    isDisabled: boolean;
     ALLOWED_GROUP_ROLES = [USER_ROLES.admin, USER_ROLES.teacher, USER_ROLES.teacheradmin];
 
 
@@ -22,7 +23,7 @@ export class GroupPickComponent implements OnInit {
         this.groups = this.session.getUserGroups();
 
         if (!this.selected) {
-            const selIdGroup = this.session.getSelectedGroup().idGroup;
+            const selIdGroup = this.session.getRememberMe().getSelectedGroup().idGroup;
             if (selIdGroup) {
                 const filtered = (this.groups || []).filter((g) => g.idGroup === selIdGroup);
                 if (filtered[0] ) {
@@ -30,13 +31,16 @@ export class GroupPickComponent implements OnInit {
                 }
             } else if (this.groups.length) {
                 this.selected = this.groups[0];
-                if (this.selected.thmcss) {
-                    this.session.addCss(this.selected.thmcss);
-                }
             }
+        }
+
+        if (this.selected) {
+            this.onSelection(this.selected);
         }
     }
 
+
+    /**
     @Input() set selection(group) {
         if (group) {
             const filtered = (this.groups || []).filter((g) => g.idGroup === group.idGroup );
@@ -47,10 +51,17 @@ export class GroupPickComponent implements OnInit {
             this.selected = this.groups[0];
         }
     }
+    **/
+
+    @Input() set disabled(d) {
+        this.dropdownShown = false;
+        this.isDisabled = d;
+    }
+
 
     onSelection(g) {
         this.selected = g;
-        this.session.setSelectedGroup(g);
+        this.session.getRememberMe().setSelectedGroup(g);
         if (g.thmcss) {
             this.session.addCss(g.thmcss);
         }

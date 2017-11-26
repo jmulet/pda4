@@ -137,9 +137,10 @@ export class ActivitiesComponent implements OnInit {
 
         const userGroups = this.session.getUserGroups();
 
-        if (userGroups.length) {
-            this.selectedGroup = userGroups[0];
-        }
+        // Delegate this to grouppicker
+        // if (userGroups.length) {
+        //    this.selectedGroup = userGroups[0];
+        // }
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe((ev) => this.session.createCalendarLocale());
 

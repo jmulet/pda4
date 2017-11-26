@@ -1,4 +1,5 @@
-<p-dropdown [options]="students" [(ngModel)]="selection" [filter]="true" filterBy="value.fullname" [style]="{'width':'250px'}" (onChange)="onSelect($event)">
+<p-dropdown [options]="students" [(ngModel)]="selection" [filter]="true" filterBy="value.fullname" [style]="{'width':'250px'}" (onChange)="onSelect($event)"
+  [disabled]="isDisabled">
 </p-dropdown>
 <div *ngIf="selection" style="display: inline-block; background: lightgray">
     <img class="round-img  pw-thm-{{selection.username}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABjAQMAAAAGvQTMAAAAA1BMVEX///+nxBvIAAAAAXRSTlMAQObYZgAAABJJREFUeNpjYBgFo2AUjAIyAQAEQQABBXTlEgAAAABJRU5ErkJggg=="

@@ -38,6 +38,7 @@ const DECIMALS = function(x, n) {
 })
 
 export class ProgressComponent implements OnInit {
+    showCalendar: boolean;
     lastStudentLogin: any;
     lastParentsLogin: any;
     loginsParents: any[];
@@ -69,12 +70,15 @@ export class ProgressComponent implements OnInit {
     constructor(private session: SessionService, private rest: RestService, private growl: MessageService) { }
 
     ngOnInit() {
-        this.groupSelected = this.session.getUserGroups()[0];
+
         this.user = this.session.getUser();
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
         this.selectedDate = new Date();
+
+        // Delegate this to group picker
         this.update();
+        // this.groupSelected = this.session.getUserGroups()[0];
     }
 
     onGroupSelected(g) {
@@ -132,6 +136,7 @@ export class ProgressComponent implements OnInit {
             return;
         }
         this.isLoading = true;
+        this.showCalendar = false;
         this.semaphoreFor = {};
         const idGroup = this.groupSelected.idGroup;
         const idTo = this.studentSelected.id;
@@ -196,9 +201,6 @@ export class ProgressComponent implements OnInit {
                 }
             });
 
-            console.log(this.loginsStudent);
-            console.log(this.loginsParents);
-
             if (this.loginsStudent.length === 0) {
                this.loginsStudent.push({label: 'Mai'});
             }
@@ -211,6 +213,7 @@ export class ProgressComponent implements OnInit {
 
         Promise.all([promise1, promise2, promise3, promise4]).then( (d) => {
             this.isLoading = false;
+            this.showCalendar = true;
             this.createSummary();
         } );
     }

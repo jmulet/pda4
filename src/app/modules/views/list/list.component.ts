@@ -57,33 +57,41 @@ export class ListComponent implements OnInit {
 
     formatter = (s: any) => s.fullname;
 
-    constructor(private rest: RestService, private session: SessionService, 
+    constructor(private rest: RestService, private session: SessionService,
         private translate: TranslateService, private growl: MessageService,
-        private confirmationService: ConfirmationService) { 
+        private confirmationService: ConfirmationService) {
         }
 
     ngOnInit() {
         this.innerWidth = window.innerWidth;
         this.dateAlert = false;
         this.today = new Date();
-        this.dateSelected = new Date();
+        this.dateSelected = this.session.getRememberMe().getSelectedDate();
         const du = new DateUtils(this.dateSelected);
         this.isHoliday = du.isHoliday();
         this.daySelected = du.toMysql();
+        if (DateUtils.compareDates(this.today, this.dateSelected) !== 0) {
+            this.dateAlert = true;
+        } else {
+            this.dateAlert = false;
+        }
         const validGroups = this.session.getUserGroups();
         this.areThereGroups = validGroups.length > 0;
-        this.selectedGroup = validGroups[0];
-        this.onGroupChanged(this.selectedGroup);
+        // Delegate this to group picker
+        // this.selectedGroup = validGroups[0];
+        // this.onGroupChanged(this.selectedGroup);
         this.locale = this.session.createCalendarLocale();
         this.session.langChanged$.subscribe( (lang) => this.locale = this.session.createCalendarLocale() );
         this.modelChanged.subscribe((txt) => {
             this.searchText = txt;
             this.applyFilter();
         });
-        this.searchText = '';
+        this.searchText = this.session.getRememberMe().getSelectedFilter();
     }
 
     applyFilter() {
+        this.session.getRememberMe().setSelectedFilter(this.searchText);
+
         if (this.searchText && this.searchText.trim()) {
             this.studentsFiltered = this.students.filter((s) => {
                 const sf = this.searchText.trim().toLowerCase();
@@ -153,7 +161,7 @@ export class ListComponent implements OnInit {
         }
 
         this.selectedGroup = g;
-        this.searchText = '';
+        this.selectedGroup2 = { idGroup: this.selectedGroup.idGroup };
         this.update();
     }
 
@@ -208,7 +216,6 @@ export class ListComponent implements OnInit {
         event.preventDefault();
         this.selectedStudent = s;
         this.createSemaphore(s);
-        this.selectedGroup2 = { idGroup: this.selectedGroup.idGroup };
         // console.log('Sending to botonera', this.selectedStudent, this.selectedGroup2);
     }
 
@@ -278,6 +285,7 @@ export class ListComponent implements OnInit {
     }
 
     onDateChange() {
+        this.session.getRememberMe().setSelectedDate(this.dateSelected);
         const du = new DateUtils(this.dateSelected);
         this.isHoliday = du.isHoliday();
         this.daySelected = du.toMysql();

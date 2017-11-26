@@ -13,9 +13,10 @@ import { SelectItem } from 'primeng/components/common/selectitem';
 export class StudentPickComponent implements OnInit, OnChanges {
     dropdownShown = false;
     @Input() group: any;
-    @Input() selection: any;
+    selection: any;
     @Output() changed = new EventEmitter<any>();
     students: SelectItem[];
+    isDisabled: boolean;
 
     constructor(private rest: RestService, private session: SessionService, private http: HttpClient) { }
 
@@ -42,6 +43,10 @@ export class StudentPickComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         this.loadStudents();
+    }
+
+    @Input() set disabled(d) {
+        this.isDisabled = d;
     }
 
     ngOnChanges(changes: SimpleChanges): void {

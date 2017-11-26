@@ -1,5 +1,5 @@
 <div class="d-inline-block dropdown">
-        <button class="btn btn-outline-primary" (click)="dropdownShown=!dropdownShown" (blur)="blur()">
+        <button class="btn btn-outline-primary" (click)="dropdownShown=!dropdownShown" (blur)="blur()" [disabled]="isDisabled">
             {{selected? (selected.name + ': '+ selected.groupName) : 'No hi ha grups'}}
         </button>
         <div aria-labelledby="dropdownBasic1" style="max-height: 300px; overflow-y:auto;" class="dropdown-menu" [class.show]="dropdownShown"  >

@@ -86,7 +86,7 @@
                         <button class="btn btn-sm  btn-info" (click)="prepareWorbook()">
                                 <span class="fa fa-file-excel-o"></span>
                         </button>
-                        <app-group-pick [(selection)]="selectedGroup" (changed)="update($event)" style="width:50%"></app-group-pick>
+                        <app-group-pick (changed)="update($event)" style="width:50%"></app-group-pick>
                         <span class="fa fa-search"></span>
                         <input id="typeahead-basic" type="text" class="form-control-static" style="width: 32%" [(ngModel)]="searchText" (ngModelChange)="applyFilter()"
                         />
@@ -124,9 +124,9 @@
                                                         <span title="{{c.field}}" style="font-size: 1.2em" class="badge badge-primary">{{'$'+c.id}}</span>
                                                         <span *ngIf="c.formula" class="fa fa-calculator"></span>
                                                         <div class="dropdown">
-                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" (click)="c.dropdownShown=!c.dropdownShown"
+                                                                <button class="btn btn-sm btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" (click)="c.dropdownShown=!c.dropdownShown"
                                                                         aria-haspopup="true" aria-expanded="false" (blur)="hideDropdown(c)">
-                                                                        ...
+                                                                        <span class="fa fa-bars"></span>
                                                                 </button>
                                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" [class.show]="c.dropdownShown" style="z-index:10000;">
                                                                         <a class="dropdown-item" href="#" (click)="editActivity(c, $event)">

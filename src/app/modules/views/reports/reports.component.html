@@ -9,7 +9,7 @@
         </h5>
 
         <b>Grup</b>:
-        <app-group-pick [(selection)]="selectedGroup" (changed)="onGrpChange($event)" style="width:50%"></app-group-pick>
+        <app-group-pick  (changed)="onGrpChange($event)" style="width:50%"></app-group-pick>
         <span *ngIf="opts.tipusInforme==2">
                <span class="fa fa-search"></span>
                <p-autoComplete [(ngModel)]="filtre" [suggestions]="suggestions" (completeMethod)="search($event)" [size]="15"

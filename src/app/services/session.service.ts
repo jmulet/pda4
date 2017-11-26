@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { EncryptUtil } from '../../util/encrypt.util';
+import { RememberMe } from './rememberme';
 
 const cssLoaded = [];
 
@@ -22,6 +23,7 @@ export const USER_ROLES = {
   undefined: 400,
   parents: 500
 };
+ 
 
 @Injectable()
 export class SessionService {
@@ -29,17 +31,20 @@ export class SessionService {
   public currentYear: number;
 
   private user: any;
-  private selectedGroup: any;
   public langChanged$: EventEmitter<string> = new EventEmitter();
   private lang = 'ca';
   ALLOWED_GROUP_ROLES = [USER_ROLES.admin, USER_ROLES.teacher, USER_ROLES.teacheradmin];
+  private rememberMe: RememberMe;
 
   constructor(private router: Router) {
     console.log('Created a session service');
+
     // Try to find which is the current academic year (starts beginning of august)
     const d = new Date();
     d.setDate(d.getDate() - 244);
     this.currentYear = d.getFullYear();
+
+    this.rememberMe = new RememberMe();
   }
 
   public setUser(user) {
@@ -100,14 +105,10 @@ export class SessionService {
     return this.lang;
   }
 
-  public getSelectedGroup(): any {
-    return this.selectedGroup || {};
+  public getRememberMe(): RememberMe {
+    return this.rememberMe;
   }
-
-  public setSelectedGroup(g: any): void {
-    this.selectedGroup = g;
-  }
-
+ 
   public addCss(styleSheet: string): void {
     if (cssLoaded.indexOf(styleSheet) < 0) {
       cssLoaded.push(styleSheet);

@@ -65,8 +65,12 @@ export class BotoneraComponent implements OnInit, OnChanges {
         // console.log('CHANGES-->', changes);
     }
     handle(evt) {
+        // This is a workaround to be bug:  sometimes the grup is not correctly passed to this component. Must be checked!!!!
+        if (!this._group) {
+            this._group = this.session.getRememberMe().getSelectedGroup();
+        }
         if (!this.student || !this._group ||  !this._day) {
-            // console.log('Component wrongly initialized, data is missing');
+            console.log('Component wrongly initialized, data is missing', this.student, this._group, this._day);
             return;
         }
         // console.log('the user is ', this.student);
