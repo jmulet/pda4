@@ -50,16 +50,15 @@
                         <span>Assigna l'activitat {{beanActivity.id}} a:</span>
                 </p-header>
                 <div style="height:400px;overflow-y:auto">
-                        <p-pickList [source]="asgn.allStudents" [target]="asgn.selected" sourceHeader="Disponible" targetHeader="Seleccionats" [responsive]="true"
-                                filterBy="fullname" dragdrop="false" sourceFilterPlaceholder="Cerca" targetFilterPlaceholder="Cerca"
-                                [showSourceControls]="false" [showTargetControls]="false" [sourceStyle]="{'height':'150px'}" [targetStyle]="{'height':'150px'}">
-
+                        <p-pickList [source]="asgn.allStudents" [target]="asgn.selected" sourceHeader="Disponible" targetHeader="Seleccionats" 
+                                [responsive]="true" filterBy="fullname" dragdrop="false" sourceFilterPlaceholder="Cerca" 
+                                targetFilterPlaceholder="Cerca" [showSourceControls]="false" [showTargetControls]="false" 
+                                [sourceStyle]="{'height': '150px'}" [targetStyle]="{'height': '150px'}">
                                 <ng-template let-s pTemplate="item">
                                         <div class="ui-helper-clearfix" style="max-width:250px">
                                                 {{s.fullname}}
                                         </div>
                                 </ng-template>
-
                         </p-pickList>
 
                         <br/>

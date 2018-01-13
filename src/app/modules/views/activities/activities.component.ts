@@ -43,6 +43,7 @@ function toColumnName(num: number) {
 })
 
 export class ActivitiesComponent implements OnInit {
+    
     activityMenuItems: MenuItem[];
     columnsFiltered: any[];
     menuItems: MenuItem[];
@@ -187,9 +188,9 @@ export class ActivitiesComponent implements OnInit {
         this.rest.getStudents(this.selectedGroup.idGroup, fromDate, toDate).toPromise().then((data: any[]) => {
             this.script.setProperty('_badges',  data);
 
-            if (!this.asgn.allStudents.length) {
-                this.asgn.allStudents = data;
-            }
+            // if (!this.asgn.allStudents.length) {
+            //    this.asgn.allStudents = data;
+            // }
 
             // Get the total number of sessions within this period
             const sessionDays = [];
@@ -669,19 +670,25 @@ export class ActivitiesComponent implements OnInit {
         }
 
         this.displayEditDlg = false;
-        this.asgn.displayAssignDlg = true;
-        // Update the selection list
-        this.asgn.override = false;
-        this.asgn.selected = [];
-        if (this.beanActivity.id) {
-            // Read from table
-            this.rows.forEach( r => {
-                const nota = r[this.beanActivity.id + ''];
-                if (nota != null && nota.grade != null && nota.grade !== '') {
-                    this.asgn.selected.push({id: r.user.id, fullname: r.user.fullname});
-                }
-            });
-        }
+        // Hauriem d'estar segurs que carrega tots els estudiants del grup abans de mostrar el dialeg
+        this.rest.listStudents(this.selectedGroup.idGroup).toPromise().then( (data: any[]) => {
+            this.asgn.displayAssignDlg = true;
+            this.asgn.allStudents = data;
+            // Update the selection list
+            this.asgn.override = false;
+            this.asgn.selected = [];
+
+            if (this.beanActivity.id) {
+                // Read from table
+                this.rows.forEach( (r) => {
+                    const nota = r[this.beanActivity.id + ''];
+                    if (nota != null && nota.grade != null && nota.grade !== '') {
+                        this.asgn.selected.push({id: r.user.id, fullname: r.user.fullname});
+                    }
+                });
+            }
+        });
+
     }
 
     cancelAssignments() {
