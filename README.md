@@ -6,7 +6,7 @@ PDA4 is an angular5 application that allows teachers:
 - Share all this information with student's parents through email and webapp.
 - Generate reports
 
-This project is a module of [piworld.es](https://github.com/jmulet/piworld.es) main repository. Hence, it relies on the database and configuration setup in this repository.
+This project is a module of [piworld.es](https://github.com/jmulet/piworld) main repository. Hence, it relies on the database and configuration setup in this repository.
 
 ## Build
 
