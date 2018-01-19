@@ -1,12 +1,12 @@
 # Pda4
 PDA4 is an angular5 application that allows teachers:
-- Create daily badges covering: attendance, behaviour, homework, classwork
-- Introduce activities and grades
+- Create daily badges including attendance, behaviour, homework and classwork
+- Introduce activities and associated grades
 - Send messages to parents
-- Share this information with student's parents
+- Share all this information with student's parents through email and webapp.
 - Generate reports
 
-This project is a module of piworld.es main repository.
+This project is a module of [piworld.es](https://github.com/jmulet/piworld.es) main repository. Hence, it relies on the database and configuration setup in this repository.
 
 ## Build
 
@@ -14,4 +14,5 @@ Run `ng build -prod -aot -base-href=./` to build the project. The build artifact
 
 ## Screenshoots
 
+![Menu](/screenshots/menu.png)
  
