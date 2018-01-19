@@ -14,9 +14,9 @@ Run `ng build -prod -aot -base-href=./` to build the project. The build artifact
 
 ## Screenshoots
 
-![Menu](/screenshots/menu.png | width=400)
+![Menu](/screenshots/menu.png){:height="400px"}
 
-![Menu](/screenshots/llista.png | width=400)
+![Menu](/screenshots/llista.png){:height="400px"}
 
-![Menu](/screenshots/seguiment.png | width=400)
+![Menu](/screenshots/seguiment.png){:height="400px"}
  
