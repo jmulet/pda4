@@ -27,7 +27,7 @@ export const USER_ROLES = {
 
 @Injectable()
 export class SessionService {
-  public version = '5.5.1';
+  public version = '5.2.3';
   public currentYear: number;
 
   private user: any;
@@ -89,7 +89,7 @@ export class SessionService {
     return -1;
   }
 
-  public logout() {
+  logout() {
     console.log('Destroying session, going to login');
     this.user = null;
     localStorage.removeItem('pwSession');

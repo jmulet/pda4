@@ -14,7 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/components/common/messageservice';
+import { MessageService } from 'primeng/components/common/messageservice'; 
 
 // import { ResponsiveModule } from 'ng2-responsive';
  

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,7 +14,8 @@ import { AccessGuard } from './services/accessguard.service';
 import { GrowlModule } from 'primeng/components/growl/growl';
 import { MessageService } from 'primeng/components/common/messageservice';
 // import { ResponsiveModule } from 'ng2-responsive';
-import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
+import { Ng2DeviceDetectorModule } from 'ng2-device-detector'; 
+import { HttpErrorHandler } from './HttpErrorHandler';
 
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
@@ -43,9 +44,17 @@ export function HttpLoaderFactory(http: HttpClient) {
   })
   ],
   providers: [
+    /*
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AppInterceptor,
+      multi: true
+    },
+    */
+    HttpErrorHandler,
     SessionService,
     AccessGuard,
-    MessageService
+    MessageService,
   ],
   bootstrap: [AppComponent]
 })

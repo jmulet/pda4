@@ -21,7 +21,7 @@
                 <b>Alumnes: </b>
                 <p-pickList [(source)]="students" [target]="studentsSelected" sourceHeader="Disponible" targetHeader="Seleccionat" [responsive]="true"
                         filterBy="fullname" dragdrop="true" dragdropScope="students" sourceFilterPlaceholder="Cerca" targetFilterPlaceholder="Cerca"
-                        [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}" [showSourceControls]="false" [showTargetControls]="false">
+                        [sourceStyle]="{'height':'200px'}" [targetStyle]="{'height':'200px'}" [showSourceControls]="false" [showTargetControls]="false">
                         <ng-template let-student pTemplate="item">
                                 <span style="max-width:250px">{{student.fullname}}</span>
                         </ng-template>
@@ -54,24 +54,24 @@
         </p>
         <br/>
 
-        <p-dataTable *ngIf="report" [value]="report" expandableRows="true">
+        <p-dataTable *ngIf="report" [value]="report" expandableRows="true" [expandedRows]="report">
                 <p-column [hidden]="opts.tipusInforme==2" expander="true" styleClass="col-icon"></p-column>
                 <p-column field="fullname" header="Estudiant"></p-column>
-                <p-column field="summary.fa" header="FA"></p-column>
-                <p-column field="summary.re" header="RE"></p-column>
-                <p-column header="Casa">
+                <p-column *ngIf="selections.fa" field="summary.fa" header="FA"></p-column>
+                <p-column *ngIf="selections.re" field="summary.re" header="RE"></p-column>
+                <p-column *ngIf="selections.hw" header="Casa">
                         <ng-template let-s="rowData" pTemplate="body">
                                 <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.hw.p}}</span>
                                 <span class="badge badge-danger"  style="font-size:110%; width: 40px;"> {{s.summary.hw.m}}</span>
                         </ng-template>
                 </p-column>
-                <p-column header="Aula">
+                <p-column *ngIf="selections.cw" header="Aula">
                         <ng-template let-s="rowData" pTemplate="body">
                                 <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.cw.p}}</span>
                                 <span class="badge badge-danger" style="font-size:110%; width: 40px;"> {{s.summary.cw.m}}</span>
                         </ng-template>
                 </p-column>
-                <p-column header="Comportament">
+                <p-column *ngIf="selections.bh" header="Comportament">
                         <ng-template let-s="rowData" pTemplate="body">
                                 <span class="badge badge-success" style="font-size:110%; width: 40px;"> {{s.summary.bh.p}}</span>
                                 <span class="badge badge-danger" style="font-size:110%; width: 40px;"> {{s.summary.bh.m}}</span>

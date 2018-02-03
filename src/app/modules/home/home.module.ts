@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { RestService } from '../../services/rest.service';
 
 import { SidebarModule } from 'primeng/components/sidebar/sidebar';
+ 
 
 export function HttpLoaderFactory(http: HttpClient) {
   // for development
@@ -38,6 +39,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     HomeComponent
   ],
-  providers: [RestService]
+  providers: [
+    RestService
+  ]
 })
 export class HomeModule { }

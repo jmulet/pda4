@@ -18,6 +18,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 export class ReportsComponent implements OnInit {
     rawReport: any[];
     report: Object;
+    expandedRowKeys: number[];
     students: any[];
     studentsSelected: any[] = [];
     locale: any;
@@ -64,6 +65,9 @@ export class ReportsComponent implements OnInit {
     }
 
     generateReport() {
+        this.opts.tipusInforme = parseInt(this.opts.tipusInforme + '', 10);
+        console.log(this.opts);
+        
         if (this.opts.tipusInforme === 1) {
             let num = 0;
             for (const key in this.selections) {
@@ -140,21 +144,23 @@ export class ReportsComponent implements OnInit {
             });
 
             let filteredReport;
-            if (this.opts.tipusInforme == 1) {
+            if (this.opts.tipusInforme === 1) {
                 // First filter students
                 filteredReport = d.filter( (s) => selectedStudentIds.indexOf(s.id) >= 0);
                 // Now filter selected badges
                 filteredReport.forEach( (s) => {
                     s.badges = s.badges.filter( (b) => selectedBadgesTypes.indexOf(b.type) >= 0);
                 });
+                // Now only show students with some badge
+                filteredReport = filteredReport.filter( (s) => s.badges.length > 0);
+                console.log(filteredReport);
             } else {
                 filteredReport  = d;
                 this.doFiltering();
             }
 
             this.report = filteredReport;
-
-
+            this.expandedRowKeys = filteredReport.map( (e) => e.id);
         });
 
     }
