@@ -1,27 +1,22 @@
 # Pda4
+PDA4 is an angular5 application that allows teachers:
+- Create daily badges including attendance, behaviour, homework and classwork
+- Introduce activities and associated grades
+- Send messages to parents
+- Share all this information with student's parents through email and webapp.
+- Generate reports
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.8.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+This project is a module of [piworld.es](https://github.com/jmulet/piworld) main repository. Hence, it relies on the database and configuration setup in this repository.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build -prod -aot -base-href=./` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
-## Running unit tests
+## Screenshots
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+![Menu](/screenshots/menu.png)
 
-## Running end-to-end tests
+![Llista](/screenshots/llista.png)
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+![Seguiment](/screenshots/seguiment.png)
+ 

@@ -1,6 +1,10 @@
 {
   "name": "pda4",
+<<<<<<< HEAD
   "version": "5.2.3",
+=======
+  "version": "5.5.1",
+>>>>>>> c492db2a50a27aadd919f5bcfc42cb9e9f6514b4
   "license": "MIT",
   "scripts": {
     "ng": "ng",
