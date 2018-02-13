@@ -461,7 +461,8 @@ export class ActivitiesComponent implements OnInit {
                         // If this column is `visible` then must create an entry in database for the newly computed value
                         if (c.visible) {
                             if ((nota + '').length > 0) {
-                                toBeSaved.push({idActivity: nota.idActivity, idUser: r.user.id, grade: nota.grade});
+                                // Atenció passar id: nota.id per evitar crear multiples entrades d'una nota.
+                                toBeSaved.push({id: nota.id, idActivity: nota.idActivity, idUser: r.user.id, grade: nota.grade});
                                 toBeSavedPointers.push(nota);
                                 /*
                                 this.rest.saveGrade(nota.idActivity, r.user.id, nota.grade).toPromise().then( (d: any) => {

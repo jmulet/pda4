@@ -10,10 +10,8 @@ import { SCORES, rainbow } from './badgebutton.component';
 import { TranslateService } from '@ngx-translate/core';
 import { DateUtils } from '../progress/date.utils';
 
-import { MessageService } from 'primeng/components/common/messageservice';
-import { ConfirmationService } from 'primeng/components/common/confirmationservice';
 import { Subject } from 'rxjs/Subject';
- 
+
 @Component({
     selector: 'app-home-list',
     templateUrl: 'list.component.html',
@@ -58,8 +56,7 @@ export class ListComponent implements OnInit {
     formatter = (s: any) => s.fullname;
 
     constructor(private rest: RestService, private session: SessionService,
-        private translate: TranslateService, private growl: MessageService,
-        private confirmationService: ConfirmationService) {
+        private translate: TranslateService) {
         }
 
     ngOnInit() {

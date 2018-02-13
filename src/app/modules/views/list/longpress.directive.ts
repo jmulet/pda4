@@ -10,6 +10,8 @@ import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } fro
     selector: '[appLongPress]'
 })
 export class LongPressDirective {
+    lastTimeUp: number;
+    lastTime: number;
 
     private timeoutId: number = null;
     private intervalId: number = null;
@@ -21,7 +23,7 @@ export class LongPressDirective {
     @Output() onLongPress = new EventEmitter();
     @Output() onLongPressing = new EventEmitter();
 
-    @Input() timeout = 300;
+    @Input() timeout = 1500;
 
     @HostBinding('class.press')
     get press() {
@@ -33,9 +35,18 @@ export class LongPressDirective {
         return this.isLongPressing;
     }
 
-    @HostListener('mousedown', ['$event'])
     @HostListener('touchstart', ['$event'])
+    @HostListener('mousedown', ['$event'])
     public onMouseDown(event) {
+        if (this.isPressing) {
+            return;
+        }
+        // Discard too near in time touches
+        const now = new Date().getTime();
+        if (this.lastTime && now - this.lastTime < 500) {
+            return;
+        }
+        this.lastTime = now;
         this.isPressing = true;
         this.isLongPressing = false;
 
@@ -44,16 +55,25 @@ export class LongPressDirective {
             event.badge = {isLong: true};
             this.onLongPress.emit(event);
 
+            /*
             this.intervalId = (<any>window).setInterval(() => {
                 this.onLongPressing.emit(event);
+                console.log('long press event');
             }, 30);
+            */
         }, this.timeout);
     }
 
-    @HostListener('mouseup', ['$event'])
     @HostListener('touchend', ['$event'])
+    @HostListener('mouseup', ['$event'])
     public onMouseUp(event) {
-        if (!this.isLongPressing) {
+         // Discard too near in time touches
+         const now = new Date().getTime();
+         if (this.lastTimeUp && now - this.lastTimeUp < 500) {
+             return;
+         }
+         this.lastTimeUp = now;
+         if (!this.isLongPressing) {
             event.badge = {isLong: false};
             this.onShortPress.emit(event);
         }
